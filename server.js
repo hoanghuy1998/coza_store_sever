@@ -3,7 +3,7 @@ const cors = require("cors");
 var multer = require("multer");
 var upload = multer();
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 //cấu hình cors
 app.use(cors());
 // cấu hình body-parser
