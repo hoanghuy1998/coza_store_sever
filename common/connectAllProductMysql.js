@@ -6,7 +6,7 @@ const connectionAllProduct = mysql.createConnection({
   database: "dbcozastore",
 });
 connectionAllProduct.connect((err) => {
-  console.log(res)
+  console.log(err)
   if (err) {
     console.log("connect fails");
   } else {
