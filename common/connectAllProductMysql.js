@@ -1,9 +1,9 @@
 const mysql = require("mysql");
 const connectionAllProduct = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "dbcozastore",
+  host: "sql6.freesqldatabase.com",
+  user: "sql6456957",
+  password: "vzYvFN3QQF",
+  database: "sql6456957",
 });
 connectionAllProduct.connect((err) => {
   if (err) {
