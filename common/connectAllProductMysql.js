@@ -6,7 +6,6 @@ const connectionAllProduct = mysql.createConnection({
   database: "sql6456957",
 });
 connectionAllProduct.connect((err) => {
-  console.log("err",err)
   if (err) {
     console.log("connect fails");
   } else {

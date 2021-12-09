@@ -12,13 +12,8 @@ const Allproduct = (allproduct) => {
 };
 Allproduct.get_all = (result) => {
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err) {
-      console.log("fail connect");
-      result(null);
-    } else {
-      console.log("succcses connect");
-      result(allproduct);
-    }
+    if (err) result(null);
+    else result(allproduct);
   });
 };
 
@@ -26,6 +21,26 @@ Allproduct.getById = (id, result) => {
   db.query("SELECT * FROM allproduct WHERE id=?", id, (err, allproduct) => {
     if (err || allproduct.length === 0) result(null);
     else result(allproduct[0]);
+  });
+};
+Allproduct.getByParam = (param, result) => {
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result(null);
+    } else {
+      if (param.search) {
+        const results = allproduct.filter(
+          (p) =>
+            p.color === param.search ||
+            p.theme === param.search ||
+            p.type === param.search ||
+            p.tag === param.search ||
+            p.sorfby === param.search ||
+            p.status === param.search
+        );
+        result(results);
+      }
+    }
   });
 };
 Allproduct.create = (data, result) => {

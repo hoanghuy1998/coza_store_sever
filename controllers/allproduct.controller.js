@@ -1,18 +1,44 @@
 const Allproduct = require("../modules/allproduct.modules");
 exports.getAllProduct = (req, res) => {
   Allproduct.get_all((datas) => {
-    console.log("res.status", res.statusCode);
-    res.send(
-      JSON.stringify({
-        status: res.statusCode,
+    if (res.statusCode === 200) {
+      res.send({
+        errorCode: 0,
         data: datas,
-      })
-    );
+      });
+    } else {
+      res.send({
+        errorCode: res.statusCode,
+        errorMessage: res.statusMessage,
+      });
+    }
   });
 };
 exports.allproduct_detail = (req, res) => {
   Allproduct.getById(req.params.id, (reqnse) => {
-    res.send({ result: reqnse });
+    console.log("req", res);
+    if (!reqnse) {
+      res.status("404").json({
+        errorMessage: "not found",
+      });
+    }
+  });
+};
+exports.getProductQuery = (req, res) => {
+  console.log("req", req.query);
+  Allproduct.getByParam(req.query, (reqnse) => {
+    console.log("req", res);
+    console.log(reqnse);
+    if (!reqnse) {
+      res.status("404").json({
+        errorMessage: "not found",
+      });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
+    }
   });
 };
 exports.add_allproduct = (req, res) => {
