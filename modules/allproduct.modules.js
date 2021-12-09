@@ -40,7 +40,11 @@ Allproduct.getByParam = (param, result) => {
             p.status === parseInt(param.search)
         );
         result(results);
+<<<<<<< .mine
       } else result(allproduct);
+=======
+      }else result(allproduct)
+>>>>>>> .theirs
     }
   });
 };
