@@ -36,7 +36,7 @@ Allproduct.getByParam = (param, result) => {
             p.type === param.search ||
             p.tag === param.search ||
             p.sorfby === param.search ||
-            p.status === param.search
+            p.status === parseInt(param.search)
         );
         result(results);
       }else result(allproduct)
