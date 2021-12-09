@@ -28,7 +28,6 @@ Allproduct.getByParam = (param, result) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
-      console.log(typeof param.search);
       if (param.search) {
         const results = allproduct.filter(
           (p) =>
@@ -40,11 +39,7 @@ Allproduct.getByParam = (param, result) => {
             p.status === parseInt(param.search)
         );
         result(results);
-<<<<<<< .mine
-      } else result(allproduct);
-=======
-      }else result(allproduct)
->>>>>>> .theirs
+      } else result(allproduct)
     }
   });
 };
