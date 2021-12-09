@@ -3,7 +3,8 @@ const db = require("../common/connectAllProductMysql");
 const Allproduct = (allproduct) => {
   (this.id = allproduct.id),
     (this.name = allproduct.name),
-    (this.image = allproduct.image),
+    (this.srcImg = allproduct.srcImg),
+    (this.status = allproduct.status),
     (this.description = this.description),
     (this.price = allproduct.price),
     (this.sale = allproduct.sale),
@@ -18,16 +19,23 @@ Allproduct.get_all = (result) => {
 };
 
 Allproduct.getById = (id, result) => {
-  db.query("SELECT * FROM allproduct WHERE id=?", id, (err, allproduct) => {
-    if (err || allproduct.length === 0) result(null);
-    else result(allproduct[0]);
-  });
+  db.query(
+    "SELECT * FROM allproductshome WHERE id=?",
+    id,
+    (err, allproduct) => {
+      console.log("err", err);
+      console.log(allproduct);
+      if (err || allproduct.length === 0) result(err);
+      else result(allproduct);
+    }
+  );
 };
 Allproduct.getByParam = (param, result) => {
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
+      console.log(typeof param.search);
       if (param.search) {
         const results = allproduct.filter(
           (p) =>
@@ -39,12 +47,12 @@ Allproduct.getByParam = (param, result) => {
             p.status === parseInt(param.search)
         );
         result(results);
-      } else result(allproduct)
+      } else result(allproduct);
     }
   });
 };
 Allproduct.create = (data, result) => {
-  db.query("INSERT INTO allproduct SET ?", data, (err, allproduct) => {
+  db.query("INSERT INTO allproductshome SET ?", data, (err, allproduct) => {
     // console.log("allproduct.inserId", allproduct.inserId);
     // console.log("allproduct", allproduct);
     console.log("err", err);
@@ -57,7 +65,7 @@ Allproduct.create = (data, result) => {
   });
 };
 Allproduct.remove = (id, result) => {
-  db.query("DELETE  FROM allproduct WHERE id=?", id, (err, allproduct) => {
+  db.query("DELETE  FROM allproductshome WHERE id=?", id, (err, allproduct) => {
     if (err) result(null);
     else result("xóa thành công phần tử tại id là" + id);
   });
@@ -65,10 +73,11 @@ Allproduct.remove = (id, result) => {
 Allproduct.update = (array, id, result) => {
   console.log("id", id);
   db.query(
-    "UPDATE allproduct SET name=?,image=?, description=?,price=?,sale=?,create_at=?,update_at WHERE id=?",
+    "UPDATE allproductshome SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=? WHERE id=?",
     [
       array.name,
-      array.image,
+      array.srcImg,
+      array.status,
       array.description,
       array.price,
       array.sale,

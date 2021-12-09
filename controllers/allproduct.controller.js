@@ -21,6 +21,11 @@ exports.allproduct_detail = (req, res) => {
       res.status("404").json({
         errorMessage: "not found",
       });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
     }
   });
 };

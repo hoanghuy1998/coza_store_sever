@@ -3,7 +3,8 @@ const db = require("../common/connectAllProductMysql");
 const MyCart = (MyCart) => {
   (this.id = MyCart.id),
     (this.name = MyCart.name),
-    (this.image = MyCart.image),
+    (this.srcImg = MyCart.srcImg),
+    (this.status = MyCart.status),
     (this.description = this.description),
     (this.price = MyCart.price),
     (this.sale = MyCart.sale),
@@ -32,12 +33,13 @@ MyCart.remove = (id, result) => {
   });
 };
 MyCart.update = (array, id, result) => {
-  console.log("id", id);
+  console.log("array", array);
   db.query(
-    "UPDATE mycart SET name=?,image=?, description=?,price=?,sale=?,create_at=?,update_at WHERE id=?",
+    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?  WHERE id=?`,
     [
       array.name,
-      array.image,
+      array.srcImg,
+      array.status,
       array.description,
       array.price,
       array.sale,
@@ -46,7 +48,11 @@ MyCart.update = (array, id, result) => {
       id,
     ],
     (err, MyCart) => {
-      result({ id: id, ...array });
+      if (err) {
+        result(err);
+      } else {
+        result({ id: id, ...array });
+      }
     }
   );
 };
