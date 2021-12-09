@@ -28,6 +28,7 @@ Allproduct.getByParam = (param, result) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
+      console.log(typeof param.search);
       if (param.search) {
         const results = allproduct.filter(
           (p) =>
@@ -36,10 +37,10 @@ Allproduct.getByParam = (param, result) => {
             p.type === param.search ||
             p.tag === param.search ||
             p.sorfby === param.search ||
-            p.status === param.search
+            p.status === parseInt(param.search)
         );
         result(results);
-      }
+      } else result(allproduct);
     }
   });
 };

@@ -25,10 +25,7 @@ exports.allproduct_detail = (req, res) => {
   });
 };
 exports.getProductQuery = (req, res) => {
-  console.log("req", req.query);
   Allproduct.getByParam(req.query, (reqnse) => {
-    console.log("req", res);
-    console.log(reqnse);
     if (!reqnse) {
       res.status("404").json({
         errorMessage: "not found",
