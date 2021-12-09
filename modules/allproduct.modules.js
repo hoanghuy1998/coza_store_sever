@@ -39,7 +39,7 @@ Allproduct.getByParam = (param, result) => {
             p.status === param.search
         );
         result(results);
-      }
+      }else result(allproduct)
     }
   });
 };
