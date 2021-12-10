@@ -9,13 +9,24 @@ const MyCart = (MyCart) => {
     (this.price = MyCart.price),
     (this.sale = MyCart.sale),
     (this.create_at = MyCart.create_at),
-    (this.update_at = MyCart.update_at);
+    (this.update_at = MyCart.update_at),
+    (this.quantity = MyCart.quantity);
 };
 MyCart.get_all = (result) => {
   db.query("SELECT * FROM mycart", (err, MyCart) => {
     if (err) result(null);
     else result(MyCart);
   });
+};
+MyCart.getById = (id, result) => {
+  db.query(
+    "SELECT * FROM mycart WHERE id=?",
+    id,
+    (err, MyCart) => {
+      if (err || MyCart.length === 0) result(err);
+      else result(MyCart);
+    }
+  );
 };
 MyCart.create = (data, result) => {
   db.query("INSERT INTO mycart SET ?", data, (err, MyCart) => {
@@ -33,9 +44,8 @@ MyCart.remove = (id, result) => {
   });
 };
 MyCart.update = (array, id, result) => {
-  console.log("array", array);
   db.query(
-    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?  WHERE id=?`,
+    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,quantity=?  WHERE id=?`,
     [
       array.name,
       array.srcImg,
@@ -45,6 +55,7 @@ MyCart.update = (array, id, result) => {
       array.sale,
       array.create_at,
       array.update_at,
+      array.quantity,
       id,
     ],
     (err, MyCart) => {
