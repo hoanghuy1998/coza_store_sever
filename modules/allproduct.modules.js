@@ -67,12 +67,40 @@ Allproduct.getByParam = (param, result) => {
         allproduct.sort(dynamicSort('price'))
         const filer=allproduct.filter(a=>a.price>=parseInt(param.start)&&a.price<=parseInt(param.end))
         result(filer)
-      } else {
+      }  else {
         result(allproduct);
       }
     }
   });
 };
+Allproduct.getPaging = (param, result) => {
+   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if(err||allproduct.length === 0){
+      result(null)
+    }else{
+      if(param.page&&param.perpage) {
+          const page=param.page
+          const perpage=param.perpage
+          const totalPage=Math.ceil(allproduct.length/perpage)
+          //
+          const slice=allproduct.slice(page*perpage,parseInt(page*perpage)+parseInt(perpage))
+          console.log(parseInt(page*perpage)+parseInt(perpage))
+          //
+          result({
+            data:slice,
+            pagingInfo:{
+            page:page,
+            pageLength:allproduct.length,
+            totalRecord:perpage,
+            totalPage:totalPage,
+            }
+          })
+      } else {
+        result(allproduct);
+      }
+    }
+   })
+}
 Allproduct.create = (data, result) => {
   db.query("INSERT INTO allproductshome SET ?", data, (err, allproduct) => {
     // console.log("allproduct.inserId", allproduct.inserId);
