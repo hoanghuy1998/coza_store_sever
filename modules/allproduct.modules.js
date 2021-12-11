@@ -10,6 +10,7 @@ const Allproduct = (allproduct) => {
     (this.sale = allproduct.sale),
     (this.create_at = allproduct.create_at),
     (this.update_at = allproduct.update_at);
+    this.productId=allproduct.productId;
 };
 Allproduct.get_all = (result) => {
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
@@ -55,6 +56,7 @@ Allproduct.getByParam = (param, result) => {
             p.type === param.search ||
             p.tag === param.search ||
             p.sorfby === param.search ||
+            p.productId===parseInt(param.search)||
             p.status === parseInt(param.search)
         );
         result(results);
@@ -84,17 +86,16 @@ Allproduct.getPaging = (param, result) => {
           const totalPage=Math.ceil(allproduct.length/perpage)
           //
           const slice=allproduct.slice(page*perpage,parseInt(page*perpage)+parseInt(perpage))
-          console.log(parseInt(page*perpage)+parseInt(perpage))
           //
           result({
             data:slice,
             pagingInfo:{
-            page:page,
-            pageLength:allproduct.length,
-            totalRecord:perpage,
-            totalPage:totalPage,
-            }
-          })
+                      page:page,
+                      pageLength:allproduct.length,
+                      totalRecord:perpage,
+                      totalPage:totalPage,
+                      }
+            })
       } else {
         result(allproduct);
       }
@@ -123,7 +124,7 @@ Allproduct.remove = (id, result) => {
 Allproduct.update = (array, id, result) => {
   console.log("id", id);
   db.query(
-    "UPDATE allproductshome SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=? WHERE id=?",
+    "UPDATE allproductshome SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,productId=? WHERE id=?",
     [
       array.name,
       array.srcImg,
@@ -133,6 +134,7 @@ Allproduct.update = (array, id, result) => {
       array.sale,
       array.create_at,
       array.update_at,
+      array.productId,
       id,
     ],
     (err, allproduct) => {
