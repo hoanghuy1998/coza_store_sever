@@ -23,19 +23,30 @@ Allproduct.getById = (id, result) => {
     "SELECT * FROM allproductshome WHERE id=?",
     id,
     (err, allproduct) => {
-      console.log("err", err);
-      console.log(allproduct);
-      if (err || allproduct.length === 0) result(err);
+      if (err || allproduct.length === 0) result(null);
       else result(allproduct);
     }
   );
 };
 Allproduct.getByParam = (param, result) => {
+        function dynamicSort(property) {
+            var sortOrder = 1;
+            if(property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a,b) {
+                /* next line works with strings and numbers, 
+                 * and you may want to customize it to your needs
+                 */
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+            }
+        }
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
-      console.log(typeof param.search);
       if (param.search) {
         const results = allproduct.filter(
           (p) =>
@@ -47,7 +58,18 @@ Allproduct.getByParam = (param, result) => {
             p.status === parseInt(param.search)
         );
         result(results);
-      } else result(allproduct);
+      } else if(param.sort&& param.order){
+        if(param.order==='asc') allproduct.sort(dynamicSort(param.sort))
+        else allproduct.sort(dynamicSort(`-${param.sort}`))
+        result(allproduct)
+      } else if(param.start&& param.end){
+        let map
+        allproduct.sort(dynamicSort('price'))
+        const filer=allproduct.filter(a=>a.price>=parseInt(param.start)&&a.price<=parseInt(param.end))
+        result(filer)
+      } else {
+        result(allproduct);
+      }
     }
   });
 };
