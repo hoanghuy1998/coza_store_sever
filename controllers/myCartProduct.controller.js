@@ -28,6 +28,20 @@ exports.getMyProduct_detail = (req, res) => {
     }
   });
 };
+exports.getMyProduct_query = (req, res) => {
+  MyCart.getQuery(req.query, (reqnse) => {
+    if (!reqnse) {
+      res.status("404").json({
+        errorMessage: "not found",
+      });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
+    }
+  });
+};
 exports.addMyProduct = (req, res) => {
   MyCart.create(req.body, (reqnse) => {
     res.send({ result: reqnse });

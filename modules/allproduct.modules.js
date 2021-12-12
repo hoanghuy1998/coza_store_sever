@@ -75,6 +75,27 @@ Allproduct.getByParam = (param, result) => {
     }
   });
 };
+Allproduct.getFullSearch=(query,result)=>{
+  db.query("SELECT * FROM allproductshome",(err,allproduct)=>{
+    if(err||allproduct.length===0) result(null);
+    else{
+      if(query.search){
+        console.log(query.search)
+      let searchs=[]
+      let x
+     const q= allproduct.map(a=>a.name.toLowerCase().search(query.search)!=-1) 
+      for (var i = 0; i < q.length; i++) {
+            if(q[i]===true){
+             searchs.push(allproduct[i])
+          }
+        }
+        if(searchs.length>0) result(searchs)
+        else result(null)
+      }
+      
+    }
+  })
+}
 Allproduct.getPaging = (param, result) => {
    db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if(err||allproduct.length === 0){

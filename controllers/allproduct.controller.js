@@ -43,6 +43,20 @@ exports.getProductQuery = (req, res) => {
     }
   });
 };
+exports.getProductFullSearch=(req,res)=>{
+  Allproduct.getFullSearch(req.query,(reqnse)=>{
+    if(!reqnse){
+      res.status("404").json({
+        errorMessage:'not found'
+      })
+    }else{
+      res.send({
+        errorCode:0,
+        data:reqnse
+      })
+    }
+  })
+}
 exports.getProductPaging = (req, res) => {
   Allproduct.getPaging(req.query, (reqnse) => {
     console.log("req.query",req.query)

@@ -10,7 +10,9 @@ const MyCart = (MyCart) => {
     (this.sale = MyCart.sale),
     (this.create_at = MyCart.create_at),
     (this.update_at = MyCart.update_at),
-    (this.quantity = MyCart.quantity);
+    (this.quantity = MyCart.quantity),
+    (this.total=MyCart.total),
+    (this.userId=MyCart.userId)
 };
 MyCart.get_all = (result) => {
   db.query("SELECT * FROM mycart", (err, MyCart) => {
@@ -25,6 +27,31 @@ MyCart.getById = (id, result) => {
     (err, MyCart) => {
       if (err || MyCart.length === 0) result(err);
       else result(MyCart);
+    }
+  );
+};
+MyCart.getQuery = (query, result) => {
+  db.query("SELECT * FROM mycart",(err, MyCart) => {
+      if (err || MyCart.length === 0) result(err);
+      else {
+        if(query.search){
+          const results = MyCart.filter(
+          (p) =>
+            p.color === query.search ||
+            p.theme === query.search ||
+            p.type === query.search ||
+            p.tag === query.search ||
+            p.sorfby === query.search ||
+            p.status === parseInt(query.search)||
+            p.sale===query.search||
+            p.new===query.search ||
+            p.seller===query.search||
+            p.feature===query.search||
+            p.userId===parseInt(query.search)
+            );
+          result(results)
+        }
+      }
     }
   );
 };
@@ -45,7 +72,7 @@ MyCart.remove = (id, result) => {
 };
 MyCart.update = (array, id, result) => {
   db.query(
-    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,quantity=?  WHERE id=?`,
+    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,quantity=?,total=?,userId=?  WHERE id=?`,
     [
       array.name,
       array.srcImg,
@@ -56,6 +83,8 @@ MyCart.update = (array, id, result) => {
       array.create_at,
       array.update_at,
       array.quantity,
+      array.total,
+      array.userId,
       id,
     ],
     (err, MyCart) => {
