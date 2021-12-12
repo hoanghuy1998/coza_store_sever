@@ -9,8 +9,11 @@ const Allproduct = (allproduct) => {
     (this.price = allproduct.price),
     (this.sale = allproduct.sale),
     (this.create_at = allproduct.create_at),
-    (this.update_at = allproduct.update_at);
-    this.productId=allproduct.productId;
+    (this.update_at = allproduct.update_at),
+    (this.productId = allproduct.productId),
+    (this.new = allproduct.new),
+    (this.feature = allproduct.feature),
+    (this.topRate = allproduct.topRate)
 };
 Allproduct.get_all = (result) => {
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
@@ -30,20 +33,21 @@ Allproduct.getById = (id, result) => {
   );
 };
 Allproduct.getByParam = (param, result) => {
-        function dynamicSort(property) {
-            var sortOrder = 1;
-            if(property[0] === "-") {
-                sortOrder = -1;
-                property = property.substr(1);
-            }
-            return function (a,b) {
-                /* next line works with strings and numbers, 
-                 * and you may want to customize it to your needs
-                 */
-                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-                return result * sortOrder;
-            }
-        }
+  function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      /* next line works with strings and numbers,
+       * and you may want to customize it to your needs
+       */
+      var result =
+        a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      return result * sortOrder;
+    };
+  }
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
@@ -56,73 +60,84 @@ Allproduct.getByParam = (param, result) => {
             p.type === param.search ||
             p.tag === param.search ||
             p.sorfby === param.search ||
-            p.productId===parseInt(param.search)||
-            p.status === parseInt(param.search)
+            p.productId === parseInt(param.search) ||
+            p.status === parseInt(param.search) ||
+            p.sale === param.search ||
+            p.new === param.search ||
+            p.seller === param.search ||
+            p.feature === param.search ||
+            p.topRate === param.search
         );
         result(results);
-      } else if(param.sort&& param.order){
-        if(param.order==='asc') allproduct.sort(dynamicSort(param.sort))
-        else allproduct.sort(dynamicSort(`-${param.sort}`))
-        result(allproduct)
-      } else if(param.start&& param.end){
-        let map
-        allproduct.sort(dynamicSort('price'))
-        const filer=allproduct.filter(a=>a.price>=parseInt(param.start)&&a.price<=parseInt(param.end))
-        result(filer)
-      }  else {
+      } else if (param.sort && param.order) {
+        if (param.order === "asc") allproduct.sort(dynamicSort(param.sort));
+        else allproduct.sort(dynamicSort(`-${param.sort}`));
+        result(allproduct);
+      } else if (param.start && param.end) {
+        let map;
+        allproduct.sort(dynamicSort("price"));
+        const filer = allproduct.filter(
+          (a) =>
+            a.price >= parseInt(param.start) && a.price <= parseInt(param.end)
+        );
+        result(filer);
+      } else {
         result(allproduct);
       }
     }
   });
 };
-Allproduct.getFullSearch=(query,result)=>{
-  db.query("SELECT * FROM allproductshome",(err,allproduct)=>{
-    if(err||allproduct.length===0) result(null);
-    else{
-      if(query.search){
-        console.log(query.search)
-      let searchs=[]
-      let x
-     const q= allproduct.map(a=>a.name.toLowerCase().search(query.search)!=-1) 
-      for (var i = 0; i < q.length; i++) {
-            if(q[i]===true){
-             searchs.push(allproduct[i])
+Allproduct.getFullSearch = (query, result) => {
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) result(null);
+    else {
+      if (query.search) {
+        let searchs = [];
+        let x;
+        const q = allproduct.map(
+          (a) => a.name.toLowerCase().search(query.search) != -1
+        );
+        for (var i = 0; i < q.length; i++) {
+          if (q[i] === true) {
+            searchs.push(allproduct[i]);
           }
         }
-        if(searchs.length>0) result(searchs)
-        else result(null)
+        if (searchs.length > 0) result(searchs);
+        else result(null);
       }
-      
     }
-  })
-}
+  });
+};
 Allproduct.getPaging = (param, result) => {
-   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if(err||allproduct.length === 0){
-      result(null)
-    }else{
-      if(param.page&&param.perpage) {
-          const page=param.page
-          const perpage=param.perpage
-          const totalPage=Math.ceil(allproduct.length/perpage)
-          //
-          const slice=allproduct.slice(page*perpage,parseInt(page*perpage)+parseInt(perpage))
-          //
-          result({
-            data:slice,
-            pagingInfo:{
-                      page:page,
-                      pageLength:allproduct.length,
-                      totalRecord:perpage,
-                      totalPage:totalPage,
-                      }
-            })
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result(null);
+    } else {
+      if (param.page && param.perpage) {
+        const page = param.page;
+        const perpage = param.perpage;
+        const totalPage = Math.ceil(allproduct.length / perpage);
+        //
+        const slice = allproduct.slice(
+          page * perpage,
+          parseInt(page * perpage) + parseInt(perpage)
+        );
+        //
+        result({
+          data: slice,
+          pagingInfo: {
+            page: page,
+            pageLength: allproduct.length,
+            totalRecord: perpage,
+            totalPage: totalPage,
+          },
+        });
       } else {
         result(allproduct);
       }
     }
-   })
-}
+  });
+};
 Allproduct.create = (data, result) => {
   db.query("INSERT INTO allproductshome SET ?", data, (err, allproduct) => {
     // console.log("allproduct.inserId", allproduct.inserId);
