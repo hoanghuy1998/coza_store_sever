@@ -77,7 +77,7 @@ Allproduct.getByParam = (param, result) => {
         else allproduct.sort(dynamicSort(`-${param.sort}`));
         result(allproduct);
       } 
-       if (param.start && param.end&&param.start!=0&&param.end!=0) {
+       if (param.start && param.end&&param.start!='undefined'&&param.end!='undefined') {
           console.log("do start")
         let map;
         allproduct.sort(dynamicSort("price"));
