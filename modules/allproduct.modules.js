@@ -52,7 +52,7 @@ Allproduct.getByParam = (param, result) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
-      if (param.search) {
+      if (param.search&&param.search!="undefined") {
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
@@ -69,11 +69,13 @@ Allproduct.getByParam = (param, result) => {
             p.topRate === param.search
         );
         result(results);
-      } else if (param.sort && param.order) {
+      } 
+       if (param.sort && param.order&&param.sort!="undefined"&& param.order!="undefined") {
         if (param.order === "asc") allproduct.sort(dynamicSort(param.sort));
         else allproduct.sort(dynamicSort(`-${param.sort}`));
         result(allproduct);
-      } else if (param.start && param.end) {
+      } 
+       if (param.start && param.end&&param.start!=0&&param.end!=0) {
         let map;
         allproduct.sort(dynamicSort("price"));
         const filer = allproduct.filter(
@@ -81,7 +83,8 @@ Allproduct.getByParam = (param, result) => {
             a.price >= parseInt(param.start) && a.price <= parseInt(param.end)
         );
         result(filer);
-      } else {
+      } 
+      if(!param) {
         result(allproduct);
       }
     }
