@@ -53,6 +53,7 @@ Allproduct.getByParam = (param, result) => {
       result(null);
     } else {
       if (param.search&&param.search!="undefined") {
+        console.log("do search")
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
@@ -71,11 +72,13 @@ Allproduct.getByParam = (param, result) => {
         result(results);
       } 
        if (param.sort && param.order&&param.sort!="undefined"&& param.order!="undefined") {
+         console.log("do sort")
         if (param.order === "asc") allproduct.sort(dynamicSort(param.sort));
         else allproduct.sort(dynamicSort(`-${param.sort}`));
         result(allproduct);
       } 
-       if (param.start && param.end&&param.start!=0&&param.end!=0) {
+       if (param.start && param.end&&param.start!='undefined'&&param.end!='undefined') {
+          console.log("do start")
         let map;
         allproduct.sort(dynamicSort("price"));
         const filer = allproduct.filter(
