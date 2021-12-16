@@ -44,12 +44,32 @@ exports.getMyProduct_query = (req, res) => {
 };
 exports.addMyProduct = (req, res) => {
   MyCart.create(req.body, (reqnse) => {
-    res.send({ result: reqnse });
+    if(!reqnse){
+      res.send({
+        errorCode:1,
+        errorMessage:'add fail'
+      })
+    }else  res.send({
+      errorCode:0,
+      data:reqnse
+    });
+   
   });
 };
 exports.updateMyCartProduct = (req, res) => {
   MyCart.update(req.body, req.params.id, (reqnse) => {
-    res.send({ result: reqnse });
+    if(!reqnse){
+      res.send({
+        errorCode:1,
+        errorMessage:'update fail'
+      })
+    }else{
+    res.send({
+      errorCode:0,
+      data:reqnse
+    })  
+    }
+    
   });
 };
 exports.removeMyCartProduct = (req, res) => {

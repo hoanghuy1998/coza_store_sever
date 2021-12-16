@@ -53,7 +53,7 @@ Allproduct.getByParam = (param, result) => {
       result(null);
     } else {
       if (param.search&&param.search!="undefined") {
-        console.log("do search")
+        console.log("do")
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
@@ -69,16 +69,16 @@ Allproduct.getByParam = (param, result) => {
             p.feature === param.search ||
             p.topRate === param.search
         );
+
         result(results);
-      } 
+      }else
+      
        if (param.sort && param.order&&param.sort!="undefined"&& param.order!="undefined") {
-         console.log("do sort")
         if (param.order === "asc") allproduct.sort(dynamicSort(param.sort));
         else allproduct.sort(dynamicSort(`-${param.sort}`));
         result(allproduct);
       } 
-       if (param.start && param.end&&param.start!='undefined'&&param.end!='undefined') {
-          console.log("do start")
+       if (param.start && param.end&&param.start!="undefined"&&param.end!="undefined") {
         let map;
         allproduct.sort(dynamicSort("price"));
         const filer = allproduct.filter(
@@ -87,6 +87,12 @@ Allproduct.getByParam = (param, result) => {
         );
         result(filer);
       } 
+      if(param.start&&param.start!="undefined"){
+        allproduct.sort(dynamicSort('price'))
+        const filter=allproduct.filter(a=>a.price>=parseInt(param.start))
+        if(filter.length>0) result(filter)
+        else result(null)
+      }
       if(!param) {
         result(allproduct);
       }
@@ -115,6 +121,7 @@ Allproduct.getFullSearch = (query, result) => {
   });
 };
 Allproduct.getPaging = (param, result) => {
+  console.log("param",param)
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
@@ -138,6 +145,55 @@ Allproduct.getPaging = (param, result) => {
             totalPage: totalPage,
           },
         });
+      } else {
+        result(allproduct);
+      }
+    }
+  });
+};
+Allproduct.getPagingSearch = (param, result) => {
+  console.log("param",param)
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result(null);
+    } else {
+      if (param.page && param.perpage&&param.search) {
+        const results = allproduct.filter(
+          (p) =>
+            p.color === param.search ||
+            p.theme === param.search ||
+            p.type === param.search ||
+            p.tag === param.search ||
+            p.sorfby === param.search ||
+            p.productId === parseInt(param.search) ||
+            p.status === parseInt(param.search) ||
+            p.sale === param.search ||
+            p.new === param.search ||
+            p.seller === param.search ||
+            p.feature === param.search ||
+            p.topRate === param.search
+        )
+        const page = param.page;
+        const perpage = param.perpage;
+        const totalPage = Math.ceil(results.length / perpage);
+        //
+        const slice = results.slice(
+          page * perpage,
+          parseInt(page * perpage) + parseInt(perpage)
+        );
+        //
+        if(slice){
+          result({
+          data: slice,
+          pagingInfo: {
+            page: page,
+            pageLength: results.length,
+            totalRecord: perpage,
+            totalPage: totalPage,
+          },
+        });
+        }else result(null)
+        
       } else {
         result(allproduct);
       }
@@ -180,7 +236,8 @@ Allproduct.update = (array, id, result) => {
       id,
     ],
     (err, allproduct) => {
-      result({ id: id, ...array });
+      if(err) result(null)
+      else result({ id: id, ...array });
     }
   );
 };

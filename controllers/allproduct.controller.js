@@ -72,6 +72,21 @@ exports.getProductPaging = (req, res) => {
     }
   });
 };
+exports.getProductPagingAndSearch = (req, res) => {
+  Allproduct.getPagingSearch(req.query, (reqnse) => {
+    console.log("req.query", req.query);
+    if (!reqnse) {
+      res.status("404").json({
+        errorMessage: "not found",
+      });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
+    }
+  });
+};
 exports.add_allproduct = (req, res) => {
   Allproduct.create(req.body, (reqnse) => {
     res.send({ result: reqnse });

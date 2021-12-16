@@ -58,10 +58,10 @@ MyCart.getQuery = (query, result) => {
 MyCart.create = (data, result) => {
   db.query("INSERT INTO mycart SET ?", data, (err, MyCart) => {
     if (err) {
-      console.log("err", err);
       result(null);
+    }else{
+       result({ id: MyCart.inserId, ...data });
     }
-    result({ id: MyCart.inserId, ...data });
   });
 };
 MyCart.remove = (id, result) => {
@@ -89,7 +89,7 @@ MyCart.update = (array, id, result) => {
     ],
     (err, MyCart) => {
       if (err) {
-        result(err);
+        result(null);
       } else {
         result({ id: id, ...array });
       }
