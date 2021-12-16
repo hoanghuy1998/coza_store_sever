@@ -18,6 +18,7 @@ exports.allproduct_detail = (req, res) => {
   Allproduct.getById(req.params.id, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
+errorCode:1,
         errorMessage: "not found",
       });
     } else {
@@ -33,6 +34,7 @@ exports.getProductQuery = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
+errorCode:1,
         errorMessage: "not found",
       });
     } else {
@@ -47,6 +49,7 @@ exports.getProductFullSearch = (req, res) => {
   Allproduct.getFullSearch(req.query, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
+errorCode:1,
         errorMessage: "not found",
       });
     } else {
@@ -62,6 +65,7 @@ exports.getProductPaging = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
+errorCode:1,
         errorMessage: "not found",
       });
     } else {
@@ -77,6 +81,7 @@ exports.getProductPagingAndSearch = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
+errorCode:1,
         errorMessage: "not found",
       });
     } else {
