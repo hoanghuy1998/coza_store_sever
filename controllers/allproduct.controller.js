@@ -93,14 +93,32 @@ exports.add_allproduct = (req, res) => {
   });
 };
 exports.update_allproduct = (req, res) => {
-  // res.send("Content-Type", "application/json");
-
   Allproduct.update(req.body, req.params.id, (reqnse) => {
-    res.send({ result: reqnse });
+    if(!reqnse){
+      res.send({
+        errorCode:1,
+        errorMessage:'update fail'
+      })
+    }else{
+      res.send({
+        errorCode:0,
+        data:reqnse
+      })
+    }
+   
   });
 };
 exports.remove_allproduct = (req, res) => {
   Allproduct.remove(req.params.id, (resp) => {
-    res.send({ result: resp });
+    if(!resp){
+      res.send({errorCode:1,
+        errorMessage:'delete fail'})
+    }else{
+      res.send({
+      errorCode:0,
+      data:resp
+    });  
+    }
+    
   });
 };
