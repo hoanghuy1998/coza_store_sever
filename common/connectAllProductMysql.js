@@ -9,13 +9,12 @@ const connectionAllProduct = mysql.createConnection({
   host: "sql6.freesqldatabase.com",
   user: "sql6458547",
   password: "DhL9elBf7K",
-  database: "sql6458547"
+  database: "sql6458547",
 
-//   host: "sql6.freesqldatabase.com",
-//   user: "sql6456957",
-//   password: "vzYvFN3QQF",
-//   database: "sql6456957"
-
+  //   host: "sql6.freesqldatabase.com",
+  //   user: "sql6456957",
+  //   password: "vzYvFN3QQF",
+  //   database: "sql6456957"
 });
 connectionAllProduct.connect((err) => {
   if (err) {

@@ -18,7 +18,7 @@ exports.allproduct_detail = (req, res) => {
   Allproduct.getById(req.params.id, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
-errorCode:1,
+	errorCode:1,
         errorMessage: "not found",
       });
     } else {
