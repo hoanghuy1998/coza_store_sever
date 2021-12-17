@@ -21,12 +21,16 @@ Comments.getById = (id, result) => {
     else result(Comments);
   });
 };
-Comments.getQuery = (query, result) => {
+Comments.getByParam = (query, result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
     if (err || Comments.length === 0) result(err);
     else {
       if (query.search) {
-        const results = Comments.filter((p) => p.commentId === query.search);
+        const results = Comments.filter(
+          (p) =>
+            p.commentId === parseInt(query.search) ||
+            p.userId === parseInt(query.search)
+        );
         if (!results || results.length === 0) result(null);
         else {
           result(results);

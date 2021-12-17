@@ -18,7 +18,7 @@ exports.allproduct_detail = (req, res) => {
   Allproduct.getById(req.params.id, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
-	errorCode:1,
+        errorCode: 1,
         errorMessage: "not found",
       });
     } else {
@@ -34,7 +34,7 @@ exports.getProductQuery = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
-errorCode:1,
+        errorCode: 1,
         errorMessage: "not found",
       });
     } else {
@@ -49,7 +49,7 @@ exports.getProductFullSearch = (req, res) => {
   Allproduct.getFullSearch(req.query, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
-errorCode:1,
+        errorCode: 1,
         errorMessage: "not found",
       });
     } else {
@@ -65,7 +65,7 @@ exports.getProductPaging = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
-errorCode:1,
+        errorCode: 1,
         errorMessage: "not found",
       });
     } else {
@@ -81,7 +81,7 @@ exports.getProductPagingAndSearch = (req, res) => {
     console.log("req.query", req.query);
     if (!reqnse) {
       res.status("404").json({
-errorCode:1,
+        errorCode: 1,
         errorMessage: "not found",
       });
     } else {
@@ -99,31 +99,28 @@ exports.add_allproduct = (req, res) => {
 };
 exports.update_allproduct = (req, res) => {
   Allproduct.update(req.body, req.params.id, (reqnse) => {
-    if(!reqnse){
+    if (!reqnse) {
       res.send({
-        errorCode:1,
-        errorMessage:'update fail'
-      })
-    }else{
+        errorCode: 1,
+        errorMessage: "update fail",
+      });
+    } else {
       res.send({
-        errorCode:0,
-        data:reqnse
-      })
+        errorCode: 0,
+        data: reqnse,
+      });
     }
-   
   });
 };
 exports.remove_allproduct = (req, res) => {
   Allproduct.remove(req.params.id, (resp) => {
-    if(!resp){
-      res.send({errorCode:1,
-        errorMessage:'delete fail'})
-    }else{
+    if (!resp) {
+      res.send({ errorCode: 1, errorMessage: "delete fail" });
+    } else {
       res.send({
-      errorCode:0,
-      data:resp
-    });  
+        errorCode: 0,
+        data: resp,
+      });
     }
-    
   });
 };
