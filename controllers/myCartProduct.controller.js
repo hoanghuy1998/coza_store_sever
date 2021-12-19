@@ -44,36 +44,45 @@ exports.getMyProduct_query = (req, res) => {
 };
 exports.addMyProduct = (req, res) => {
   MyCart.create(req.body, (reqnse) => {
-    if(!reqnse){
+    if (!reqnse) {
       res.send({
-        errorCode:1,
-        errorMessage:'add fail'
-      })
-    }else  res.send({
-      errorCode:0,
-      data:reqnse
-    });
-   
+        errorCode: 1,
+        errorMessage: "add fail",
+      });
+    } else
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
   });
 };
 exports.updateMyCartProduct = (req, res) => {
   MyCart.update(req.body, req.params.id, (reqnse) => {
-    if(!reqnse){
+    if (!reqnse) {
       res.send({
-        errorCode:1,
-        errorMessage:'update fail'
-      })
-    }else{
-    res.send({
-      errorCode:0,
-      data:reqnse
-    })  
+        errorCode: 1,
+        errorMessage: "update fail",
+      });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: reqnse,
+      });
     }
-    
   });
 };
 exports.removeMyCartProduct = (req, res) => {
   MyCart.remove(req.params.id, (resp) => {
-    res.send({ result: resp });
+    if (!resp) {
+      res.send({
+        errorCode: 1,
+        errorMessage: "delete fail",
+      });
+    } else {
+      res.send({
+        errorCode: 0,
+        data: resp,
+      });
+    }
   });
 };
