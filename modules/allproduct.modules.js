@@ -13,7 +13,7 @@ const Allproduct = (allproduct) => {
     (this.productId = allproduct.productId),
     (this.new = allproduct.new),
     (this.feature = allproduct.feature),
-    (this.topRate = allproduct.topRate)
+    (this.topRate = allproduct.topRate);
 };
 Allproduct.get_all = (result) => {
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
@@ -48,12 +48,13 @@ Allproduct.getByParam = (param, result) => {
       return result * sortOrder;
     };
   }
+  console.log("param", param);
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
-      if (param.search&&param.search!="undefined") {
-        console.log("do")
+      if (param.search && param.search != "undefined") {
+        console.log("do search");
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
@@ -71,30 +72,203 @@ Allproduct.getByParam = (param, result) => {
         );
 
         result(results);
-      }else
-      
-       if (param.sort && param.order&&param.sort!="undefined"&& param.order!="undefined") {
+      } else if (
+        param.sort &&
+        param.order &&
+        param.sort != "undefined" &&
+        param.order != "undefined"
+      ) {
         if (param.order === "asc") allproduct.sort(dynamicSort(param.sort));
         else allproduct.sort(dynamicSort(`-${param.sort}`));
         result(allproduct);
-      } 
-       if (param.start && param.end&&param.start!="undefined"&&param.end!="undefined") {
-        let map;
+      } else if (
+        param.start &&
+        param.end &&
+        param.start != "undefined" &&
+        param.end != "undefined"
+      ) {
         allproduct.sort(dynamicSort("price"));
         const filer = allproduct.filter(
           (a) =>
             a.price >= parseInt(param.start) && a.price <= parseInt(param.end)
         );
         result(filer);
-      } 
-      if(param.start&&param.start!="undefined"){
-        allproduct.sort(dynamicSort('price'))
-        const filter=allproduct.filter(a=>a.price>=parseInt(param.start))
-        if(filter.length>0) result(filter)
-        else result(null)
-      }
-      if(!param) {
+      } else if (param.start && param.start != "undefined") {
+        allproduct.sort(dynamicSort("price"));
+        const filter = allproduct.filter(
+          (a) => a.price >= parseInt(param.start)
+        );
+        if (filter.length > 0) result(filter);
+        else result(null);
+      } else if (!param) {
         result(allproduct);
+      }
+    }
+  });
+};
+Allproduct.productFilterQuery = (query, result) => {
+  function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      /* next line works with strings and numbers,
+       * and you may want to customize it to your needs
+       */
+      var result =
+        a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      return result * sortOrder;
+    };
+  }
+  console.log("query", query);
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result({
+        errorCode: 1,
+        errorMessage: "not found",
+      });
+    } else {
+      const filter = allproduct.filter(
+        (a) => a.theme === query.type || a.type === query.type
+      );
+      if (query.type && query.search && query.search != "undefined") {
+        if (filter) {
+          const x = filter.filter(
+            (f) =>
+              f.sorfby === query.search ||
+              f.color === query.search ||
+              f.tag === query.search
+          );
+          result({
+            errorCode: 0,
+            data: x,
+          });
+        } else {
+          result({
+            errorCode: 1,
+            errorMessage: "not found",
+          });
+        }
+      } else if (
+        query.type &&
+        query.start &&
+        query.start &&
+        query.end &&
+        query.start != "undefined" &&
+        query.end != "undefined"
+      ) {
+        console.log("do start and  end");
+        filter.sort(dynamicSort("price"));
+        const slice = filter.filter(
+          (f) => f.price >= query.start && f.price <= query.end
+        );
+        if (slice) {
+          result({
+            errorCode: 0,
+            data: slice,
+          });
+        } else {
+          result({
+            errorCode: 2,
+            errorMessage: "not found",
+          });
+        }
+      } else if (
+        query.type &&
+        query.start &&
+        query.start != "undefined" &&
+        query.end === "undefined"
+      ) {
+        console.log("do start and no end");
+        filter.sort(dynamicSort("price"));
+        const slice = filter.filter((f) => f.price >= query.start);
+        if (slice) {
+          result({
+            errorCode: 0,
+            data: slice,
+          });
+        } else {
+          result({
+            errorCode: 2,
+            errorMessage: "not found",
+          });
+        }
+      }
+    }
+  });
+};
+Allproduct.productSortQuery = (query, result) => {
+  function dynamicSort(property) {
+    var sortOrder = 1;
+    if (property[0] === "-") {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+    return function (a, b) {
+      /* next line works with strings and numbers,
+       * and you may want to customize it to your needs
+       */
+      var result =
+        a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+      return result * sortOrder;
+    };
+  }
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result({
+        errorCode: 1,
+        errorMessage: "not found",
+      });
+    } else {
+      const filter = allproduct.filter(
+        (a) => a.theme === query.type || a.type === query.type
+      );
+      if (query.order === "asc") {
+        result({
+          errorCode: 0,
+          data: filter.sort(dynamicSort(query.sort)),
+        });
+      } else {
+        result({
+          errorCode: 0,
+          data: filter.sort(dynamicSort(`-${query.sort}`)),
+        });
+      }
+    }
+  });
+};
+Allproduct.productFullSearchQuery = (query, result) => {
+  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
+    if (err || allproduct.length === 0) {
+      result({
+        errorCode: 1,
+        errorMessage: "not found",
+      });
+    } else {
+      const filter = allproduct.filter(
+        (a) => a.theme === query.type || a.type === query.type
+      );
+      let searchs = [];
+      const q = filter.map(
+        (a) => a.name.toLowerCase().search(query.search) != -1
+      );
+      for (var i = 0; i < q.length; i++) {
+        if (q[i] === true) {
+          searchs.push(filter[i]);
+        }
+      }
+      if (searchs.length > 0) {
+        result({
+          errorCode: 0,
+          data: searchs,
+        });
+      } else {
+        result({
+          errorCode: 1,
+          errorMessage: "not found",
+        });
       }
     }
   });
@@ -105,7 +279,6 @@ Allproduct.getFullSearch = (query, result) => {
     else {
       if (query.search) {
         let searchs = [];
-        let x;
         const q = allproduct.map(
           (a) => a.name.toLowerCase().search(query.search) != -1
         );
@@ -121,7 +294,7 @@ Allproduct.getFullSearch = (query, result) => {
   });
 };
 Allproduct.getPaging = (param, result) => {
-  console.log("param",param)
+  console.log("param", param);
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
@@ -152,12 +325,12 @@ Allproduct.getPaging = (param, result) => {
   });
 };
 Allproduct.getPagingSearch = (param, result) => {
-  console.log("param",param)
+  console.log("param", param);
   db.query("SELECT * FROM allproductshome", (err, allproduct) => {
     if (err || allproduct.length === 0) {
       result(null);
     } else {
-      if (param.page && param.perpage&&param.search) {
+      if (param.page && param.perpage && param.search) {
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
@@ -172,7 +345,7 @@ Allproduct.getPagingSearch = (param, result) => {
             p.seller === param.search ||
             p.feature === param.search ||
             p.topRate === param.search
-        )
+        );
         const page = param.page;
         const perpage = param.perpage;
         const totalPage = Math.ceil(results.length / perpage);
@@ -182,18 +355,17 @@ Allproduct.getPagingSearch = (param, result) => {
           parseInt(page * perpage) + parseInt(perpage)
         );
         //
-        if(slice){
+        if (slice) {
           result({
-          data: slice,
-          pagingInfo: {
-            page: page,
-            pageLength: results.length,
-            totalRecord: perpage,
-            totalPage: totalPage,
-          },
-        });
-        }else result(null)
-        
+            data: slice,
+            pagingInfo: {
+              page: page,
+              pageLength: results.length,
+              totalRecord: perpage,
+              totalPage: totalPage,
+            },
+          });
+        } else result(null);
       } else {
         result(allproduct);
       }
@@ -236,7 +408,7 @@ Allproduct.update = (array, id, result) => {
       id,
     ],
     (err, allproduct) => {
-      if(err) result(null)
+      if (err) result(null);
       else result({ id: id, ...array });
     }
   );

@@ -14,24 +14,28 @@ exports.getAllProduct = (req, res) => {
     }
   });
 };
-exports.allproduct_detail = (req, res) => {
-  Allproduct.getById(req.params.id, (reqnse) => {
-    if (!reqnse) {
-      res.status("404").json({
-        errorCode: 1,
-        errorMessage: "not found",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
-  });
-};
 exports.getProductQuery = (req, res) => {
   Allproduct.getByParam(req.query, (reqnse) => {
-    console.log("req.query", req.query);
+    res.send(reqnse);
+  });
+};
+exports.getProductFilterQuery = (req, res) => {
+  Allproduct.productFilterQuery(req.query, (reqnse) => {
+    res.send(reqnse);
+  });
+};
+exports.getProductSortQuery = (req, res) => {
+  Allproduct.productSortQuery(req.query, (reqnse) => {
+    res.send(reqnse);
+  });
+};
+exports.getProductFullSearchQuery = (req, res) => {
+  Allproduct.productFullSearchQuery(req.query, (reqnse) => {
+    res.send(reqnse);
+  });
+};
+exports.allproduct_detail = (req, res) => {
+  Allproduct.getById(req.params.id, (reqnse) => {
     if (!reqnse) {
       res.status("404").json({
         errorCode: 1,
