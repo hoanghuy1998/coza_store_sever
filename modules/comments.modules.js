@@ -7,7 +7,8 @@ const Comments = (Comments) => {
     (this.contents = Comments.contents),
     (this.avataUser = Comments.avataUser),
     (this.create_at = Comments.create_at),
-    (this.update_at = Comments.update_at);
+    (this.update_at = Comments.update_at),
+    (this.userName = Comments.userName);
 };
 Comments.get_all = (result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
@@ -56,8 +57,9 @@ Comments.remove = (id, result) => {
 };
 Comments.update = (array, id, result) => {
   db.query(
-    `UPDATE commens SET commentId=?,userId=?,contents=?,contents=?,create_at=?,update_at=?  WHERE id=?`,
+    `UPDATE commens SET userName=?, commentId=?,userId=?,contents=?,contents=?,create_at=?,update_at=?  WHERE id=?`,
     [
+      array.userName,
       array.commentId,
       array.userId,
       array.contents,
