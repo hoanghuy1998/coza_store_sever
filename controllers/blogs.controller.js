@@ -27,6 +27,6 @@ exports.update_blog = (req, res) => {
 };
 exports.remove_blog = (req, res) => {
   Allblog.remove(req.params.id, (resp) => {
-    res.send({ result: reqnse });
+    res.send({ result: resp });
   });
 };
