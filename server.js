@@ -18,6 +18,8 @@ require("./routers/myCartProduct.router")(app);
 require("./routers/login.router")(app);
 require("./routers/blogs.router")(app);
 require("./routers/comments.router")(app);
+require("./routers/productSolded.router")(app);
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
