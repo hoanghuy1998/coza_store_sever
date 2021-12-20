@@ -59,6 +59,9 @@ ProductSolded.create = (data, result) => {
   if (typeof data === "object") {
     console.log("do 1");
     let newCode;
+
+    let isAdd = false;
+    let isErr = false;
     const makeid = (l) => {
       var result = "";
       var characters =
@@ -78,25 +81,23 @@ ProductSolded.create = (data, result) => {
           newCode = makeid(10);
         } while (code.forEach((e) => e.code === newCode));
         console.log(newCode);
-        data.forEach((d) => {
-          d.codeOrder = newCode;
-          console.log("data", d);
+        let newData = [];
+        for (let i = 0; i < data.length; i++) {
+          data[i].codeOrder = newCode;
           db.query(
             "INSERT INTO productsolded SET ?",
-            d,
-            (err, ProductSolded) => {
-              if (err) {
-                result(null);
-              } else {
-                result({
-                  errorCode: 0,
-                  data: { id: ProductSolded.inserId, ...data },
-                  codeOrder: newCode,
-                });
-              }
-            }
+            data[i],
+            (err, ProductSolded) => {}
           );
-        });
+          newData = [...newData, data[i]];
+          if (i + 1 === data.length) {
+            result({
+              errorCode: 0,
+              data: newData,
+              codeOrder: newCode,
+            });
+          }
+        }
       } else {
         result({
           errorCode: 3,
