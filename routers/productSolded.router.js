@@ -1,5 +1,5 @@
 module.exports = (router) => {
-  const ProductSolded = require("../controllers/roductSolded.controller");
+  const ProductSolded = require("../controllers/productSolded.controller");
   router.get("/productSolded", ProductSolded.getMyProduct);
   router.get("/productSolded:id", ProductSolded.getMyProduct_detail);
   router.get("/productSolded/query", ProductSolded.getMyProduct_query);
