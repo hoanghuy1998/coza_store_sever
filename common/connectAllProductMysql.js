@@ -6,10 +6,10 @@ const connectionAllProduct = mysql.createConnection({
   // database: "dbcozastore",
   // database server
 
-  host: "sql6.freesqldatabase.com",
-  user: "sql6458547",
-  password: "DhL9elBf7K",
-  database: "sql6458547",
+ host: "sql6.freesqldatabase.com",
+  user: "sql6460119",
+  password: "Z3zyKy951y",
+  database: "sql6460119",
 
   //   host: "sql6.freesqldatabase.com",
   //   user: "sql6456957",

@@ -88,7 +88,11 @@ ProductSolded.create = (data, result) => {
               if (err) {
                 result(null);
               } else {
-                result({ id: ProductSolded.inserId, ...data });
+                result({
+                  errorCode: 0,
+                  data: { id: ProductSolded.inserId, ...data },
+                  codeOrder: newCode,
+                });
               }
             }
           );
