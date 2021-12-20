@@ -16,7 +16,8 @@ const ProductSolded = (ProductSolded) => {
     (this.phone = ProductSolded.phone),
     (this.ward = ProductSolded.ward),
     (this.district = ProductSolded.district),
-    (this.city = ProductSolded.city);
+    (this.city = ProductSolded.city),
+    (this.srcImg = ProductSolded.srcImg);
 };
 ProductSolded.get_all = (result) => {
   db.query("SELECT * FROM productsolded", (err, ProductSolded) => {
@@ -130,7 +131,7 @@ ProductSolded.create = (data, result) => {
 // };
 // ProductSolded.update = (array, id, result) => {
 //   db.query(
-//     `UPDATE productsolded SET userName=?,userId=?,codeOrder=?, productName=?,price=?,dress=?,create_at=?,update_at=?,quantity=?,total=?,status=?,phone=?,ward=?,district=?,city=?  WHERE id=?`,
+//     `UPDATE productsolded SET userName=?,userId=?,codeOrder=?, productName=?,price=?,dress=?,create_at=?,update_at=?,quantity=?,total=?,status=?,phone=?,ward=?,district=?,city=?,srcImg=?  WHERE id=?`,
 //     [
 //       array.userName,
 //       array.userId,
@@ -147,6 +148,7 @@ ProductSolded.create = (data, result) => {
 //       array.ward,
 //       array.district,
 //       array.city,
+//       array.srcImg,
 //       id,
 //     ],
 //     (err, ProductSolded) => {
