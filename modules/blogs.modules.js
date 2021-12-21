@@ -12,6 +12,10 @@ const Blog = (Blog) => {
 };
 Blog.get_all = (result) => {
   db.query("SELECT * FROM blogs", (err, blog) => {
+    blog.forEach((b) => {
+      b.contents = JSON.parse(b.contents);
+      b.taps = JSON.parse(b.taps);
+    });
     if (err) {
       result({
         errorCode: 1,
@@ -30,7 +34,45 @@ Blog.get_all = (result) => {
     }
   });
 };
-
+Blog.getQuery = (query, result) => {
+  let data = [];
+  db.query("SELECT * FROM blogs", (err, blog) => {
+    blog.forEach((b) => {
+      b.contents = JSON.parse(b.contents);
+      b.taps = JSON.parse(b.taps);
+    });
+    if (err) {
+      result({
+        errorCode: 1,
+        errorMessage: "get found",
+      });
+    } else if (blog.length === 0) {
+      result({
+        errorCode: 2,
+        errorMessage: "not found",
+      });
+    } else {
+      const b = blog.filter((b) => b.taps);
+      const filter = blog.map((b) => b.taps.filter((t) => t === query.search));
+      for (let i = 0; i < filter.length; i++) {
+        if (filter[i].length > 0) {
+          data.push(blog[i]);
+        }
+      }
+      if (filter) {
+        result({
+          errorCode: 0,
+          data: data,
+        });
+      } else {
+        result({
+          errorCode: 2,
+          errorMessage: "not found",
+        });
+      }
+    }
+  });
+};
 Blog.create = (data, result) => {
   db.query("INSERT INTO blogs SET ?", data, (err, blog) => {
     if (err || blog.length === 0) {
@@ -48,6 +90,8 @@ Blog.create = (data, result) => {
 };
 Blog.getById = (id, result) => {
   db.query("SELECT * FROM blogs WHERE id=?", id, (err, blog) => {
+    blog[0].contents = JSON.parse(blog[0].contents);
+    blog[0].taps = JSON.parse(blog[0].taps);
     if (err) {
       result({
         errorCode: 1,

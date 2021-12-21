@@ -9,6 +9,11 @@ exports.getblog_detail = (req, res) => {
     res.send(reqnse);
   });
 };
+exports.getblogQuery = (req, res) => {
+  Allblog.getQuery(req.query, (reqnse) => {
+    res.send(reqnse);
+  });
+};
 exports.getPaging = (req, res) => {
   console.log(req.query);
   Allblog.paging(req.query, (reqnse) => {
