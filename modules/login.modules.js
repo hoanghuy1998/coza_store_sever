@@ -10,7 +10,8 @@ const User = (User) => {
     (this.create_at = User.create_at),
     (this.update_at = User.update_at),
     (this.date = User.date),
-    (this.password = User.password);
+    (this.password = User.password),
+    (this.listProductLike = User.listProductLike);
 };
 User.postUser = (data, result) => {
   console.log("do login");
@@ -23,6 +24,8 @@ User.postUser = (data, result) => {
 
       if (x && x.length > 0) {
         const results = x.filter((x) => x.password === parseInt(data.password));
+        console.log(results);
+        results[0].listProductLike = JSON.parse(results[0].listProductLike);
         console.log("results", results);
         if (results) {
           result({
@@ -80,6 +83,7 @@ User.adduser = (data, result) => {
 };
 User.getById = (id, result) => {
   db.query("SELECT * FROM user WHERE id=?", id, (err, user) => {
+    let listProductLike = JSON.parse(user[0].listProductLike);
     if (err) {
       result({
         errorCode: 1,
@@ -90,7 +94,13 @@ User.getById = (id, result) => {
         errorCode: 1,
         errorMessage: "not found",
       });
-    } else result(user);
+    } else {
+      user[0].listProductLike = listProductLike;
+      result({
+        errorCode: 0,
+        data: user,
+      });
+    }
   });
 };
 User.remove = (id, result) => {
@@ -104,8 +114,10 @@ User.remove = (id, result) => {
   });
 };
 User.update = (array, id, result) => {
+  console.log("do update");
+  array.listProductLike = JSON.stringify(array.listProductLike);
   db.query(
-    `UPDATE user SET userName=?,userId=?,avata=?, gender=?,email=?,create_at=?,update_at=?,date=?,password=?  WHERE id=?`,
+    `UPDATE user SET userName=?,userId=?,avata=?, gender=?,email=?,create_at=?,update_at=?,date=?,password=?,listProductLike=?  WHERE id=?`,
     [
       array.userName,
       array.userId,
@@ -116,6 +128,7 @@ User.update = (array, id, result) => {
       array.update_at,
       array.date,
       array.password,
+      array.listProductLike,
       id,
     ],
     (err, user) => {
@@ -125,6 +138,7 @@ User.update = (array, id, result) => {
           errorMessage: "update fail",
         });
       } else {
+        array.listProductLike = JSON.parse(array.listProductLike);
         result({
           errorCode: 0,
           data: { id: id, ...array },
