@@ -65,6 +65,7 @@ User.adduser = (data, result) => {
         errorMessage: "Email already exists",
       });
     } else {
+       data.listProductLike = JSON.stringify(data.listProductLike);
       db.query("INSERT INTO user SET ?", data, (err, x) => {
         if (err) {
           result({
@@ -72,6 +73,7 @@ User.adduser = (data, result) => {
             errorMessage: "add fail",
           });
         } else {
+         data.listProductLike = JSON.parse(data.listProductLike);
           result({
             errorCode: 0,
             data: { id: x.inserId, ...data },
