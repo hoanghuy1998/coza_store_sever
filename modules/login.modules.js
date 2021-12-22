@@ -74,6 +74,8 @@ User.adduser = (data, result) => {
           });
         } else {
          data.listProductLike = JSON.parse(data.listProductLike);
+      console.log(data.listProductLike)
+          console.log(err)
           result({
             errorCode: 0,
             data: { id: x.inserId, ...data },
