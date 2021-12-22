@@ -408,7 +408,6 @@ Allproduct.update = (array, id, result) => {
       id,
     ],
     (err, allproduct) => {
-      console.log({ id: id, ...array })
       if (err) result(null);
       else result({ id: id, ...array });
     }

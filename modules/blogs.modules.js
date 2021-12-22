@@ -8,11 +8,13 @@ const Blog = (Blog) => {
     (this.create_at = Blog.create_at),
     (this.update_at = Blog.update_at),
     (this.taps = Blog.taps),
-    (this.srcImg = Blog.srcImg);
+    (this.srcImg = Blog.srcImg),
+    (this.author = Blog.author);
 };
 Blog.get_all = (result) => {
   db.query("SELECT * FROM blogs", (err, blog) => {
     blog.forEach((b) => {
+      console.log("do chuyen");
       b.contents = JSON.parse(b.contents);
       b.taps = JSON.parse(b.taps);
     });
@@ -127,6 +129,10 @@ Blog.paging = (query, result) => {
           errorMessage: "not found",
         });
       } else {
+        slice.forEach((b) => {
+          b.contents = JSON.parse(b.contents);
+          b.taps = JSON.parse(b.taps);
+        });
         result({
           errorCode: 0,
           data: slice,
@@ -157,7 +163,7 @@ Blog.remove = (id, result) => {
 };
 Blog.update = (array, id, result) => {
   db.query(
-    `UPDATE blogs SET title=?,commentId=?,contents=?,introduces=?,create_at=?,update_at=?,taps=?,srcImg=?  WHERE id=?`,
+    `UPDATE blogs SET title=?,commentId=?,contents=?,introduces=?,create_at=?,update_at=?,taps=?,srcImg=?,author=?  WHERE id=?`,
     [
       array.title,
       array.commentId,
@@ -167,6 +173,7 @@ Blog.update = (array, id, result) => {
       array.update_at,
       array.taps,
       array.srcImg,
+      array.author,
       id,
     ],
     (err, blog) => {

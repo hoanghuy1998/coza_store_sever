@@ -83,7 +83,7 @@ User.adduser = (data, result) => {
 };
 User.getById = (id, result) => {
   db.query("SELECT * FROM user WHERE id=?", id, (err, user) => {
-    console.log(user)
+    console.log("user",user)
     let listProductLike = JSON.parse(user[0].listProductLike);
     if (err) {
       result({
