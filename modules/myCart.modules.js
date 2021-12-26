@@ -1,96 +1,136 @@
 const db = require("../common/connectAllProductMysql");
-
+const x = require("../returnAPI");
+const nowDate = x.getDate;
+const convertSrc = x.convertSrc;
+const parse = x.parse;
+const stringify = x.stringify;
+console.log(nowDate());
 const MyCart = (MyCart) => {
   (this.id = MyCart.id),
+    (this.userId = MyCart.userId),
+    (this.productId = MyCart.productId),
     (this.name = MyCart.name),
     (this.srcImg = MyCart.srcImg),
-    (this.status = MyCart.status),
-    (this.description = this.description),
-    (this.price = MyCart.price),
-    (this.sale = MyCart.sale),
     (this.create_at = MyCart.create_at),
     (this.update_at = MyCart.update_at),
     (this.quantity = MyCart.quantity),
-    (this.total = MyCart.total),
-    (this.userId = MyCart.userId);
+    (this.price = MyCart.price),
+    (this.total = MyCart.total);
 };
 MyCart.get_all = (result) => {
   db.query("SELECT * FROM mycart", (err, MyCart) => {
-    if (err) result(null);
+    convertSrc(MyCart);
+    console.log(MyCart);
+    if (err) result({ code: 400 });
+    else if (MyCart.length === 0) result(null);
     else result(MyCart);
   });
 };
 MyCart.getById = (id, result) => {
   db.query("SELECT * FROM mycart WHERE id=?", id, (err, MyCart) => {
-    if (err || MyCart.length === 0) result(err);
+    convertSrc(MyCart);
+    if (err) result({ code: 400 });
+    else if (MyCart.length === 0) result(null);
     else result(MyCart);
   });
 };
 MyCart.getQuery = (query, result) => {
+  console.log("query", query);
   db.query("SELECT * FROM mycart", (err, MyCart) => {
-    if (err || MyCart.length === 0) result(err);
+    if (err) result({ code: 400 });
+    else if (MyCart.length === 0) result(null);
     else {
+      convertSrc(MyCart);
       if (query.search) {
         const results = MyCart.filter(
-          (p) =>
-            p.color === query.search ||
-            p.theme === query.search ||
-            p.type === query.search ||
-            p.tag === query.search ||
-            p.sorfby === query.search ||
-            p.status === parseInt(query.search) ||
-            p.sale === query.search ||
-            p.new === query.search ||
-            p.seller === query.search ||
-            p.feature === query.search ||
-            p.userId === parseInt(query.search)
+          (p) => p.userId === parseInt(query.search)
         );
+        console.log("result", results);
         result(results);
-      }
+      } else result(MyCart);
     }
   });
 };
 MyCart.create = (data, result) => {
-  db.query("INSERT INTO mycart SET ?", data, (err, MyCart) => {
-    if (err) {
-      result(null);
-    } else {
-      result({ id: MyCart.inserId, ...data });
+  //data={id,quantity,userId}
+  console.log("data", data);
+  let newData = {};
+  db.query("SELECT * FROM products WHERE id=?", data.id, (err, product) => {
+    if (err) result({ code: 400 });
+    else if (MyCart.length === 0) result(null);
+    else {
+      product.map((p) => {
+        newData = {
+          userId: data.userId,
+          name: p.name,
+          productId: p.productId,
+          srcImg: p.srcImg,
+          price: p.price,
+          quantity: data.quantity,
+          total: parseInt(data.quantity) * p.price,
+          create_at: nowDate(),
+          update_at: nowDate(),
+        };
+      });
+      if (newData) {
+        db.query("INSERT INTO mycart SET ?", newData, (err, MyCart) => {
+          if (err) result({ code: 400 });
+          else if (MyCart.length === 0) result(null);
+          else {
+            newData.id = MyCart.inserId;
+            result(newData);
+          }
+        });
+      } else result(null);
     }
   });
 };
 MyCart.remove = (id, result) => {
   console.log("do delete");
   db.query("DELETE  FROM mycart WHERE id=?", id, (err, MyCart) => {
-    if (err) result(null);
+    if (err) result({ code: 400 });
     else result("xóa thành công phần tử tại id là" + id);
   });
 };
-MyCart.update = (array, id, result) => {
-  db.query(
-    `UPDATE mycart SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,quantity=?,total=?,userId=?  WHERE id=?`,
-    [
-      array.name,
-      array.srcImg,
-      array.status,
-      array.description,
-      array.price,
-      array.sale,
-      array.create_at,
-      array.update_at,
-      array.quantity,
-      array.total,
-      array.userId,
-      id,
-    ],
-    (err, MyCart) => {
-      if (err) {
-        result(null);
-      } else {
-        result({ id: id, ...array });
-      }
+MyCart.update = (data, id, result) => {
+  // array={quantity}
+  console.log(data);
+  db.query("SELECT * FROM mycart WHERE id=?", id, (err, MyCart) => {
+    if (err) result({ code: 400 });
+    else {
+      MyCart.map((m) => {
+        m.quantity = data.quantity;
+        m.total = data.quantity * m.price;
+        m.update_at = nowDate();
+        db.query(
+          `UPDATE mycart SET name=?,srcImg=?,price=?,create_at=?,update_at=?,quantity=?,total=?,userId=?,productId=?  WHERE id=?`,
+          [
+            m.name,
+            m.srcImg,
+            m.price,
+            m.create_at,
+            m.update_at,
+            m.quantity,
+            m.total,
+            m.userId,
+            m.productId,
+            id,
+          ],
+          (err, MyCart) => {
+            if (err) {
+              console.log(err);
+              result({
+                code: err.errno,
+                errorMessage: err.message,
+              });
+            } else {
+              result(m);
+            }
+          }
+        );
+      });
     }
-  );
+  });
 };
 
 module.exports = MyCart;

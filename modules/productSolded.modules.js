@@ -60,9 +60,6 @@ ProductSolded.create = (data, result) => {
   if (typeof data === "object") {
     console.log("do 1");
     let newCode;
-
-    let isAdd = false;
-    let isErr = false;
     const makeid = (l) => {
       var result = "";
       var characters =

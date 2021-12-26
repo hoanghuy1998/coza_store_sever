@@ -1,88 +1,21 @@
 const MyCart = require("../modules/myCart.modules");
+const x = require("../returnAPI");
+const payload = x.payload;
 exports.getMyProduct = (req, res) => {
-  MyCart.get_all((datas) => {
-    if (res.statusCode === 200) {
-      res.send({
-        errorCode: 0,
-        data: datas,
-      });
-    } else {
-      res.send({
-        errorCode: res.statusCode,
-        errorMessage: res.statusMessage,
-      });
-    }
-  });
+  MyCart.get_all((reqnse) => payload(res, reqnse));
 };
 exports.getMyProduct_detail = (req, res) => {
-  MyCart.getById(req.params.id, (reqnse) => {
-    if (!reqnse) {
-      res.status("404").json({
-        errorMessage: "not found",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
-  });
+  MyCart.getById(req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.getMyProduct_query = (req, res) => {
-  MyCart.getQuery(req.query, (reqnse) => {
-    if (!reqnse) {
-      res.status("404").json({
-        errorMessage: "not found",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
-  });
+  MyCart.getQuery(req.query, (reqnse) => payload(res, reqnse));
 };
 exports.addMyProduct = (req, res) => {
-  MyCart.create(req.body, (reqnse) => {
-    if (!reqnse) {
-      res.send({
-        errorCode: 1,
-        errorMessage: "add fail",
-      });
-    } else
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-  });
+  MyCart.create(req.body, (reqnse) => payload(res, reqnse));
 };
 exports.updateMyCartProduct = (req, res) => {
-  MyCart.update(req.body, req.params.id, (reqnse) => {
-    if (!reqnse) {
-      res.send({
-        errorCode: 1,
-        errorMessage: "update fail",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
-  });
+  MyCart.update(req.body, req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.removeMyCartProduct = (req, res) => {
-  MyCart.remove(req.params.id, (resp) => {
-    if (!resp) {
-      res.send({
-        errorCode: 1,
-        errorMessage: "delete fail",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: resp,
-      });
-    }
-  });
+  MyCart.remove(req.params.id, (reqnse) => payload(res, reqnse));
 };

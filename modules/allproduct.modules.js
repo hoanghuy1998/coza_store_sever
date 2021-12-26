@@ -1,36 +1,47 @@
 const db = require("../common/connectAllProductMysql");
-
+const x = require("../returnAPI");
+const convertSrc = x.convertSrc;
+const parse = x.parse;
+const stringify = x.stringify;
 const Allproduct = (allproduct) => {
   (this.id = allproduct.id),
+    (this.productId = allproduct.productId),
     (this.name = allproduct.name),
     (this.srcImg = allproduct.srcImg),
     (this.status = allproduct.status),
+    (this.color = allproduct.color),
+    (this.type = allproduct.type),
     (this.description = this.description),
+    (this.sorfby = allproduct.sorfby),
     (this.price = allproduct.price),
-    (this.sale = allproduct.sale),
     (this.create_at = allproduct.create_at),
     (this.update_at = allproduct.update_at),
-    (this.productId = allproduct.productId),
-    (this.new = allproduct.new),
-    (this.feature = allproduct.feature),
-    (this.topRate = allproduct.topRate);
+    (this.totalquantitys = allproduct.totalquantitys),
+    (this.tag = allproduct.tag);
 };
 Allproduct.get_all = (result) => {
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err) result(null);
-    else result(allproduct);
+  let i = 0;
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
+      result(allproduct);
+    }
   });
 };
 
 Allproduct.getById = (id, result) => {
-  db.query(
-    "SELECT * FROM allproductshome WHERE id=?",
-    id,
-    (err, allproduct) => {
-      if (err || allproduct.length === 0) result(null);
-      else result(allproduct);
+  db.query("SELECT * FROM products WHERE id=?", id, (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
+      result(allproduct);
     }
-  );
+  });
 };
 Allproduct.getByParam = (param, result) => {
   function dynamicSort(property) {
@@ -49,29 +60,39 @@ Allproduct.getByParam = (param, result) => {
     };
   }
   console.log("param", param);
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result(null);
-    } else {
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
+      let data = [];
       if (param.search && param.search != "undefined") {
         console.log("do search");
         const results = allproduct.filter(
           (p) =>
             p.color === param.search ||
-            p.theme === param.search ||
-            p.type === param.search ||
             p.tag === param.search ||
             p.sorfby === param.search ||
-            p.productId === parseInt(param.search) ||
-            p.status === parseInt(param.search) ||
-            p.sale === param.search ||
-            p.new === param.search ||
-            p.seller === param.search ||
-            p.feature === param.search ||
-            p.topRate === param.search
+            p.productId === parseInt(param.search)
         );
-
-        result(results);
+        if (results.length === 0) {
+          const status = allproduct.map((a) =>
+            a.status.filter((t) => t === param.search)
+          );
+          const type = allproduct.map((a) =>
+            a.type.filter((t) => t === param.search)
+          );
+          const x = (a) => {
+            for (let i = 0; i < a.length; i++) {
+              if (a[i].length > 0) data.push(allproduct[i]);
+            }
+          };
+          x(status);
+          x(type);
+          if (data.length > 0) result(data);
+          else result(null);
+        } else result(results);
       } else if (
         param.sort &&
         param.order &&
@@ -92,14 +113,17 @@ Allproduct.getByParam = (param, result) => {
           (a) =>
             a.price >= parseInt(param.start) && a.price <= parseInt(param.end)
         );
-        result(filer);
+        if (filer.length > 0) result(filer);
+        else result(null);
       } else if (param.start && param.start != "undefined") {
         allproduct.sort(dynamicSort("price"));
         const filter = allproduct.filter(
           (a) => a.price >= parseInt(param.start)
         );
-        if (filter.length > 0) result(filter);
-        else result(null);
+        if (filter.length > 0) {
+          convertSrc(filter);
+          result(filter);
+        } else result(null);
       } else if (!param) {
         result(allproduct);
       }
@@ -123,34 +147,36 @@ Allproduct.productFilterQuery = (query, result) => {
     };
   }
   console.log("query", query);
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result({
-        errorCode: 1,
-        errorMessage: "not found",
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
+      let datas = [];
+      const fil = allproduct.map((a) => {
+        const b = a.type.filter((t) => t === query.type);
+        if (b.length > 0) datas.push(a);
       });
-    } else {
-      const filter = allproduct.filter(
-        (a) => a.theme === query.type || a.type === query.type
-      );
       if (query.type && query.search && query.search != "undefined") {
-        if (filter) {
-          const x = filter.filter(
+        if (datas) {
+          let dataQuery = [];
+          const x = datas.filter(
             (f) =>
               f.sorfby === query.search ||
               f.color === query.search ||
               f.tag === query.search
           );
-          result({
-            errorCode: 0,
-            data: x,
-          });
-        } else {
-          result({
-            errorCode: 1,
-            errorMessage: "not found",
-          });
-        }
+          if (x.length > 0) result(x);
+          else {
+            datas.map((d) => {
+              const e = d.status.filter((s) => s === query.search);
+              if (e.length > 0) dataQuery.push(d);
+            });
+            convertSrc(dataQuery);
+            result(dataQuery);
+          }
+        } else result(null);
       } else if (
         query.type &&
         query.start &&
@@ -160,21 +186,13 @@ Allproduct.productFilterQuery = (query, result) => {
         query.end != "undefined"
       ) {
         console.log("do start and  end");
-        filter.sort(dynamicSort("price"));
-        const slice = filter.filter(
+        datas.sort(dynamicSort("price"));
+        const slice = datas.filter(
           (f) => f.price >= query.start && f.price <= query.end
         );
         if (slice) {
-          result({
-            errorCode: 0,
-            data: slice,
-          });
-        } else {
-          result({
-            errorCode: 2,
-            errorMessage: "not found",
-          });
-        }
+          result(slice);
+        } else result(null);
       } else if (
         query.type &&
         query.start &&
@@ -182,19 +200,11 @@ Allproduct.productFilterQuery = (query, result) => {
         query.end === "undefined"
       ) {
         console.log("do start and no end");
-        filter.sort(dynamicSort("price"));
-        const slice = filter.filter((f) => f.price >= query.start);
+        datas.sort(dynamicSort("price"));
+        const slice = datas.filter((f) => f.price >= query.start);
         if (slice) {
-          result({
-            errorCode: 0,
-            data: slice,
-          });
-        } else {
-          result({
-            errorCode: 2,
-            errorMessage: "not found",
-          });
-        }
+          result(slice);
+        } else result(null);
       }
     }
   });
@@ -215,67 +225,59 @@ Allproduct.productSortQuery = (query, result) => {
       return result * sortOrder;
     };
   }
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result({
-        errorCode: 1,
-        errorMessage: "not found",
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
+      let newData = [];
+      allproduct.map((a) => {
+        const b = a.type.filter((t) => t === query.type);
+        if (b.length > 0) newData.push(a);
       });
-    } else {
-      const filter = allproduct.filter(
-        (a) => a.theme === query.type || a.type === query.type
-      );
-      if (query.order === "asc") {
-        result({
-          errorCode: 0,
-          data: filter.sort(dynamicSort(query.sort)),
-        });
-      } else {
-        result({
-          errorCode: 0,
-          data: filter.sort(dynamicSort(`-${query.sort}`)),
-        });
-      }
+      if (newData.length > 0) {
+        if (query.order === "asc") {
+          newData = newData.sort(dynamicSort(query.sort));
+          result(newData);
+        } else {
+          newData = newData.sort(dynamicSort(`-${query.sort}`));
+          result(newData);
+        }
+      } else result(null);
     }
   });
 };
 Allproduct.productFullSearchQuery = (query, result) => {
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result({
-        errorCode: 1,
-        errorMessage: "not found",
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err || allproduct.length === 0) result(1);
+    else {
+      let newData = [];
+      parse(allproduct);
+      allproduct.map((a) => {
+        const x = a.type.filter((t) => t === query.type);
+        if (x.length > 0) newData.push(a);
       });
-    } else {
-      const filter = allproduct.filter(
-        (a) => a.theme === query.type || a.type === query.type
-      );
       let searchs = [];
-      const q = filter.map(
+      const q = newData.map(
         (a) => a.name.toLowerCase().search(query.search) != -1
       );
       for (var i = 0; i < q.length; i++) {
         if (q[i] === true) {
-          searchs.push(filter[i]);
+          searchs.push(newData[i]);
         }
       }
       if (searchs.length > 0) {
-        result({
-          errorCode: 0,
-          data: searchs,
-        });
-      } else {
-        result({
-          errorCode: 1,
-          errorMessage: "not found",
-        });
-      }
+        convertSrc(searchs);
+        result(searchs);
+      } else result(null);
     }
   });
 };
 Allproduct.getFullSearch = (query, result) => {
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) result(null);
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
     else {
       if (query.search) {
         let searchs = [];
@@ -287,37 +289,43 @@ Allproduct.getFullSearch = (query, result) => {
             searchs.push(allproduct[i]);
           }
         }
-        if (searchs.length > 0) result(searchs);
-        else result(null);
+        if (searchs.length > 0) {
+          convertSrc(searchs);
+          result(searchs);
+        } else result(null);
       }
     }
   });
 };
 Allproduct.getPaging = (param, result) => {
   console.log("param", param);
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result(null);
-    } else {
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      convertSrc(allproduct);
+      parse(allproduct);
       if (param.page && param.perpage) {
-        const page = param.page;
-        const perpage = param.perpage;
+        const page = parseInt(param.page);
+        const perpage = parseInt(param.perpage);
         const totalPage = Math.ceil(allproduct.length / perpage);
         //
         const slice = allproduct.slice(
           page * perpage,
-          parseInt(page * perpage) + parseInt(perpage)
+          page * perpage + perpage
         );
         //
-        result({
-          data: slice,
-          pagingInfo: {
-            page: page,
-            pageLength: allproduct.length,
-            totalRecord: perpage,
-            totalPage: totalPage,
-          },
-        });
+        if (slice.length > 0)
+          result({
+            data: slice,
+            pagingInfo: {
+              page: page,
+              pageLength: allproduct.length,
+              totalRecord: perpage,
+              totalPage: totalPage,
+            },
+          });
+        else result(null);
       } else {
         result(allproduct);
       }
@@ -326,34 +334,35 @@ Allproduct.getPaging = (param, result) => {
 };
 Allproduct.getPagingSearch = (param, result) => {
   console.log("param", param);
-  db.query("SELECT * FROM allproductshome", (err, allproduct) => {
-    if (err || allproduct.length === 0) {
-      result(null);
-    } else {
+  db.query("SELECT * FROM products", (err, allproduct) => {
+    if (err) result({ code: 400 });
+    else if (allproduct.length === 0) result(null);
+    else {
+      let results;
+      convertSrc(allproduct);
+      parse(allproduct);
       if (param.page && param.perpage && param.search) {
-        const results = allproduct.filter(
+        results = allproduct.filter(
           (p) =>
             p.color === param.search ||
-            p.theme === param.search ||
-            p.type === param.search ||
             p.tag === param.search ||
-            p.sorfby === param.search ||
-            p.productId === parseInt(param.search) ||
-            p.status === parseInt(param.search) ||
-            p.sale === param.search ||
-            p.new === param.search ||
-            p.seller === param.search ||
-            p.feature === param.search ||
-            p.topRate === param.search
+            p.sorfby === param.search
         );
-        const page = param.page;
-        const perpage = param.perpage;
+        if (results.length === 0) {
+          allproduct.map((a) => {
+            const b = a.status.filter((s) => s === param.search);
+            if (b.length > 0) results.push(a);
+          });
+          allproduct.map((a) => {
+            const b = a.type.filter((t) => t === param.search);
+            if (b.length > 0) results.push(a);
+          });
+        }
+        const page = parseInt(param.page);
+        const perpage = parseInt(param.perpage);
         const totalPage = Math.ceil(results.length / perpage);
         //
-        const slice = results.slice(
-          page * perpage,
-          parseInt(page * perpage) + parseInt(perpage)
-        );
+        const slice = results.slice(page * perpage, page * perpage + perpage);
         //
         if (slice) {
           result({
@@ -373,28 +382,24 @@ Allproduct.getPagingSearch = (param, result) => {
   });
 };
 Allproduct.create = (data, result) => {
-  db.query("INSERT INTO allproductshome SET ?", data, (err, allproduct) => {
-    // console.log("allproduct.inserId", allproduct.inserId);
-    // console.log("allproduct", allproduct);
-    console.log("err", err);
-    // console.log("data", data);
+  db.query("INSERT INTO products SET ?", data, (err, allproduct) => {
     if (err) {
       console.log("err", err);
-      result(null);
-    }
-    result({ id: allproduct.inserId, ...data });
+      result({ code: 400 });
+    } else if (allproduct.length === 0) result(null);
+    else result({ ...data, id: allproduct.inserId });
   });
 };
 Allproduct.remove = (id, result) => {
-  db.query("DELETE  FROM allproductshome WHERE id=?", id, (err, allproduct) => {
-    if (err) result(null);
+  db.query("DELETE  FROM products WHERE id=?", id, (err, allproduct) => {
+    if (err) result({ code: 400 });
     else result("xóa thành công phần tử tại id là" + id);
   });
 };
 Allproduct.update = (array, id, result) => {
   console.log("id", id);
   db.query(
-    "UPDATE allproductshome SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,productId=? WHERE id=?",
+    "UPDATE products SET name=?,srcImg=?,status=?, description=?,price=?,sale=?,create_at=?,update_at=?,productId=? WHERE id=?",
     [
       array.name,
       array.srcImg,
@@ -408,7 +413,7 @@ Allproduct.update = (array, id, result) => {
       id,
     ],
     (err, allproduct) => {
-      if (err) result(null);
+      if (err) result({ code: 400 });
       else result({ id: id, ...array });
     }
   );

@@ -54,7 +54,6 @@ Blog.getQuery = (query, result) => {
         errorMessage: "not found",
       });
     } else {
-      const b = blog.filter((b) => b.taps);
       const filter = blog.map((b) => b.taps.filter((t) => t === query.search));
       for (let i = 0; i < filter.length; i++) {
         if (filter[i].length > 0) {
