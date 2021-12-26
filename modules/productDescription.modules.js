@@ -8,12 +8,12 @@ const product = (product) => {
 };
 product.productfilter = (query, result) => {
   db.query("SELECT * FROM productdescription", (err, product) => {
-    if (err) result({ code: 400 });
-    else if (product.length === 0) result(null);
+    if (err) {
+      console.log("err", err);
+      result({ code: 400 });
+    } else if (product.length === 0) result(null);
     else {
-      console.log("product", product);
       const x = product.filter((p) => p.productId === parseInt(query.search));
-      console.log("x", x);
       if (x) {
         convertSrc(x);
         result(x);
