@@ -26,6 +26,7 @@ require("./routers/blogs.router")(app);
 require("./routers/comments.router")(app);
 require("./routers/productSolded.router")(app);
 require("./routers/productDescription.router")(app);
+require("./routers/details.router")(app);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);

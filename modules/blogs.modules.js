@@ -20,20 +20,11 @@ Blog.get_all = (result) => {
     });
     if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "get found",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else if (blog.length === 0) {
-      result({
-        errorCode: 2,
-        errorMessage: "not found",
-      });
-    } else {
-      result({
-        errorCode: 0,
-        data: blog,
-      });
-    }
+    } else if (blog.length === 0) result(null);
+    else result(blog);
   });
 };
 Blog.getQuery = (query, result) => {
@@ -45,47 +36,33 @@ Blog.getQuery = (query, result) => {
     });
     if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "get found",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else if (blog.length === 0) {
-      result({
-        errorCode: 2,
-        errorMessage: "not found",
-      });
-    } else {
+    } else if (blog.length === 0) result(null);
+    else {
       const filter = blog.map((b) => b.taps.filter((t) => t === query.search));
       for (let i = 0; i < filter.length; i++) {
         if (filter[i].length > 0) {
           data.push(blog[i]);
         }
       }
-      if (filter) {
-        result({
-          errorCode: 0,
-          data: data,
-        });
-      } else {
-        result({
-          errorCode: 2,
-          errorMessage: "not found",
-        });
-      }
+      if (filter) result(data);
+      else result(null);
     }
   });
 };
 Blog.create = (data, result) => {
   db.query("INSERT INTO blogs SET ?", data, (err, blog) => {
-    if (err || blog.length === 0) {
+    if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "add fail",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else {
-      result({
-        errorCode: 0,
-        data: { id: blog.inserId, ...data },
-      });
+    } else if (blog.length === 0) result(null);
+    else {
+      data.id = blog.inserId;
+      result(data);
     }
   });
 };
@@ -95,15 +72,11 @@ Blog.getById = (id, result) => {
     blog[0].taps = JSON.parse(blog[0].taps);
     if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "get fail",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else if (blog.length === 0) {
-      result({
-        errorCode: 1,
-        errorMessage: "not found",
-      });
-    } else result(blog);
+    } else if (blog.length === 0) result(null);
+    else result(blog);
   });
 };
 Blog.paging = (query, result) => {
@@ -111,10 +84,11 @@ Blog.paging = (query, result) => {
   db.query("SELECT * FROM blogs", (err, blog) => {
     if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "not found",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else {
+    } else if (blog.length === 0) result(null);
+    else {
       const page = query.page;
       const perPage = query.perpage;
       const totalPage = Math.ceil(blog.length / perPage);
@@ -122,18 +96,13 @@ Blog.paging = (query, result) => {
         page * perPage,
         parseInt(perPage * page) + parseInt(perPage)
       );
-      if (slice.length === 0) {
-        result({
-          errorCode: 1,
-          errorMessage: "not found",
-        });
-      } else {
+      if (slice.length === 0) result(null);
+      else {
         slice.forEach((b) => {
           b.contents = JSON.parse(b.contents);
           b.taps = JSON.parse(b.taps);
         });
         result({
-          errorCode: 0,
           data: slice,
           pagingInfo: {
             page: page,
@@ -150,14 +119,10 @@ Blog.remove = (id, result) => {
   db.query("DELETE  FROM blogs WHERE id=?", id, (err, blog) => {
     if (err) {
       result({
-        errorCode: 1,
-        errorMessage: "delte fail",
+        code: err.errno,
+        errorMessage: err.message,
       });
-    } else
-      result({
-        errorCode: 0,
-        data: "xóa thành công phần tử tại id là" + id,
-      });
+    } else result("xóa thành công phần tử tại id là" + " " + id);
   });
 };
 Blog.update = (array, id, result) => {
@@ -178,14 +143,12 @@ Blog.update = (array, id, result) => {
     (err, blog) => {
       if (err) {
         result({
-          errorCode: 1,
-          errorMessage: "update fail",
+          code: err.errno,
+          errorMessage: err.message,
         });
       } else {
-        result({
-          errorCode: 0,
-          data: { id: id, ...array },
-        });
+        array.id = id;
+        result(array);
       }
     }
   );

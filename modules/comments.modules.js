@@ -1,5 +1,6 @@
 const db = require("../common/connectAllProductMysql");
-
+const x = require("../returnAPI");
+const nowDate = x.getDate;
 const Comments = (Comments) => {
   (this.id = Comments.id),
     (this.commentId = Comments.commentId),
@@ -12,7 +13,12 @@ const Comments = (Comments) => {
 };
 Comments.get_all = (result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
-    if (err) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else if (Comments.length === 0) result(null);
     else result(Comments);
   });
 };
@@ -24,7 +30,12 @@ Comments.getById = (id, result) => {
 };
 Comments.getByParam = (query, result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
-    if (err || Comments.length === 0) result(err);
+    if (err) {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else if (Comments.length === 0) result(null);
     else {
       if (query.search) {
         const results = Comments.filter(
@@ -43,19 +54,30 @@ Comments.getByParam = (query, result) => {
 Comments.create = (data, result) => {
   db.query("INSERT INTO commens SET ?", data, (err, Comments) => {
     if (err) {
-      result(null);
+      result({
+        code: err.errno,
+        message: err.message,
+      });
     } else {
-      result({ id: Comments.inserId, ...data });
+      data.id = Comments.inserId;
+      data.update_at = nowDate();
+      data.create_at = nowDate();
+      result(data);
     }
   });
 };
 Comments.remove = (id, result) => {
   db.query("DELETE  FROM commens WHERE id=?", id, (err, Comments) => {
-    if (err) result(null);
-    else result("xóa thành công phần tử tại id là" + id);
+    if (err) {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else result("xóa thành công phần tử tại id là" + id);
   });
 };
 Comments.update = (array, id, result) => {
+  array.update_at = nowDate();
   db.query(
     `UPDATE commens SET userName=?, commentId=?,userId=?,contents=?,contents=?,create_at=?,update_at=?  WHERE id=?`,
     [
@@ -70,9 +92,13 @@ Comments.update = (array, id, result) => {
     ],
     (err, Comments) => {
       if (err) {
-        result(null);
+        result({
+          code: err.errno,
+          message: err.message,
+        });
       } else {
-        result({ id: id, ...array });
+        array.id = id;
+        result(array);
       }
     }
   );

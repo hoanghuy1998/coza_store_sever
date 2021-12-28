@@ -5,6 +5,7 @@ module.exports = (login) => {
   login.get("/refresh-token", loginUser.refreshToken);
   // login.use(authMiddleware.isAuth);
   login.get("/user/:id", loginUser.getUser_detail);
+  login.get("/user", loginUser.getAll);
   login.post("/user", loginUser.addUser);
   //   login.post("/user/query", loginUser.addUser);
   login.put("/user/:id", loginUser.updateUser);

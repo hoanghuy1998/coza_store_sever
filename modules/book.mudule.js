@@ -9,15 +9,24 @@ const Book = (book) => {
 Book.get_all = (result) => {
   db.query("SELECT * FROM newbooks", (err, book) => {
     if (err) {
-      result(null);
-    } else {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else if (book.length === 0) result(null);
+    else {
       result(book);
     }
   });
 };
 Book.getById = (id, result) => {
   db.query("SELECT * FROM newbooks WHERE id=?", id, (err, book) => {
-    if (err || book.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else if (book.length === 0) result(null);
     else result(book[0]);
   });
 };
@@ -34,8 +43,12 @@ Book.create = (data, result) => {
 };
 Book.remove = (id, result) => {
   db.query("DELETE  FROM newbooks WHERE id=?", id, (err, book) => {
-    if (err) result(null);
-    else result("xóa thành công phần tử tại id là" + id);
+    if (err) {
+      result({
+        code: err.errno,
+        message: err.message,
+      });
+    } else result("xóa thành công phần tử tại id là" + id);
   });
 };
 Book.update = (array, id, result) => {
@@ -46,8 +59,15 @@ Book.update = (array, id, result) => {
     (err, book) => {
       console.log("err", err);
       console.log("arr", array);
-      if (err) result(null);
-      else result({ id: id, ...array });
+      if (err) {
+        result({
+          code: err.errno,
+          message: err.message,
+        });
+      } else {
+        array.id = id;
+        result(array);
+      }
     }
   );
 };

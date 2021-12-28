@@ -1,77 +1,27 @@
 const ProductSolded = require("../modules/productSolded.modules");
+const x = require("../returnAPI");
+const payload = x.payload;
 exports.getMyProduct = (req, res) => {
-  ProductSolded.get_all((datas) => {
-    if (res.statusCode === 200) {
-      res.send({
-        errorCode: 0,
-        data: datas,
-      });
-    } else {
-      res.send({
-        errorCode: res.statusCode,
-        errorMessage: res.statusMessage,
-      });
-    }
-  });
+  ProductSolded.get_all((reqnse) => payload(res, reqnse));
 };
 exports.getMyProduct_detail = (req, res) => {
   ProductSolded.getById(req.params.id, (reqnse) => {
-    if (!reqnse) {
-      res.status("404").json({
-        errorMessage: "not found",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
+    console.log(req.params.id);
+    payload(res, reqnse);
   });
 };
 exports.getMyProduct_query = (req, res) => {
   ProductSolded.getQuery(req.query, (reqnse) => {
-    if (!reqnse) {
-      res.status("404").json({
-        errorMessage: "not found",
-      });
-    } else {
-      res.send({
-        errorCode: 0,
-        data: reqnse,
-      });
-    }
+    console.log(req.query);
+    payload(res, reqnse);
   });
 };
 exports.addMyProduct = (req, res) => {
-  ProductSolded.create(req.body, (reqnse) => res.send(reqnse));
+  ProductSolded.create(req.body, (reqnse) => payload(res, reqnse));
 };
 // exports.updateMyCartProduct = (req, res) => {
-//   ProductSolded.update(req.body, req.params.id, (reqnse) => {
-//     if (!reqnse) {
-//       res.send({
-//         errorCode: 1,
-//         errorMessage: "update fail",
-//       });
-//     } else {
-//       res.send({
-//         errorCode: 0,
-//         data: reqnse,
-//       });
-//     }
-//   });
+//   ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse));
 // };
 // exports.removeMyCartProduct = (req, res) => {
-//   ProductSolded.remove(req.params.id, (resp) => {
-//     if (!resp) {
-//       res.send({
-//         errorCode: 1,
-//         errorMessage: "delete fail",
-//       });
-//     } else {
-//       res.send({
-//         errorCode: 0,
-//         data: resp,
-//       });
-//     }
-//   });
+//   ProductSolded.remove(req.params.id, (resp) =>  payload(res, reqnse));
 // };

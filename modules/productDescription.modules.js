@@ -9,8 +9,10 @@ const product = (product) => {
 product.productfilter = (query, result) => {
   db.query("SELECT * FROM productdescription", (err, product) => {
     if (err) {
-      console.log("err", err);
-      result({ code: 400 });
+      result({
+        code: err.errno,
+        message: err.message,
+      });
     } else if (product.length === 0) result(null);
     else {
       const x = product.filter((p) => p.productId === parseInt(query.search));

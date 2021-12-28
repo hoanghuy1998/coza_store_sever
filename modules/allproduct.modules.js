@@ -22,8 +22,12 @@ const Allproduct = (allproduct) => {
 Allproduct.get_all = (result) => {
   let i = 0;
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -34,8 +38,12 @@ Allproduct.get_all = (result) => {
 
 Allproduct.getById = (id, result) => {
   db.query("SELECT * FROM products WHERE id=?", id, (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -61,8 +69,12 @@ Allproduct.getByParam = (param, result) => {
   }
   console.log("param", param);
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -148,8 +160,12 @@ Allproduct.productFilterQuery = (query, result) => {
   }
   console.log("query", query);
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -226,8 +242,12 @@ Allproduct.productSortQuery = (query, result) => {
     };
   }
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -250,7 +270,12 @@ Allproduct.productSortQuery = (query, result) => {
 };
 Allproduct.productFullSearchQuery = (query, result) => {
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err || allproduct.length === 0) result(1);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       let newData = [];
       parse(allproduct);
@@ -276,8 +301,12 @@ Allproduct.productFullSearchQuery = (query, result) => {
 };
 Allproduct.getFullSearch = (query, result) => {
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       if (query.search) {
         let searchs = [];
@@ -300,8 +329,12 @@ Allproduct.getFullSearch = (query, result) => {
 Allproduct.getPaging = (param, result) => {
   console.log("param", param);
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       convertSrc(allproduct);
       parse(allproduct);
@@ -335,8 +368,12 @@ Allproduct.getPaging = (param, result) => {
 Allproduct.getPagingSearch = (param, result) => {
   console.log("param", param);
   db.query("SELECT * FROM products", (err, allproduct) => {
-    if (err) result({ code: 400 });
-    else if (allproduct.length === 0) result(null);
+    if (err) {
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
+    } else if (allproduct.length === 0) result(null);
     else {
       let results;
       convertSrc(allproduct);
@@ -384,8 +421,10 @@ Allproduct.getPagingSearch = (param, result) => {
 Allproduct.create = (data, result) => {
   db.query("INSERT INTO products SET ?", data, (err, allproduct) => {
     if (err) {
-      console.log("err", err);
-      result({ code: 400 });
+      result({
+        code: err.errno,
+        errorMessage: err.message,
+      });
     } else if (allproduct.length === 0) result(null);
     else result({ ...data, id: allproduct.inserId });
   });
@@ -413,8 +452,12 @@ Allproduct.update = (array, id, result) => {
       id,
     ],
     (err, allproduct) => {
-      if (err) result({ code: 400 });
-      else result({ id: id, ...array });
+      if (err) {
+        result({
+          code: err.errno,
+          errorMessage: err.message,
+        });
+      } else result({ id: id, ...array });
     }
   );
 };
