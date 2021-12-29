@@ -38,17 +38,10 @@ let generateToken = (user, secretSignature, tokenLife) => {
  * @param {*} secretKey
  */
 let verifyToken = (token, secretKey) => {
-  console.log(token);
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (error, decoded) => {
-      console.log("do kt");
-      console.log("secretKey", secretKey);
-      if (error) {
-        console.log(error);
-        reject(error);
-      } else {
-        resolve(decoded);
-      }
+      if (error) reject(error);
+      else resolve(decoded);
     });
   });
 };

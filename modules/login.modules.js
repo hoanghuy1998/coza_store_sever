@@ -1,4 +1,7 @@
 const db = require("../common/connectAllProductMysql");
+const fs = require("fs");
+const path = require("path");
+const __basedir = path.join(__dirname, "../resoure/upload/");
 const x = require("../returnAPI");
 const nowDate = x.getDate;
 const convertSrc = x.convertSrc;
@@ -68,7 +71,7 @@ User.getAll = (result) => {
     }
   });
 };
-User.postUser = (data, result) => {
+User.postUser = (host, data, result) => {
   console.log("do login");
   db.query("SELECT * FROM user", data, (err, user) => {
     if (err) {
@@ -79,20 +82,22 @@ User.postUser = (data, result) => {
     } else {
       const x = user.filter((u) => u.email === data.email);
       if (x && x.length > 0) {
-        const results = x.filter((x) => x.password === parseInt(data.password));
-        if (results) {
+        const results = x.filter((x) => x.password === data.password);
+        console.log("results", results);
+        if (results.length === 0) result({ code: 406 });
+        else {
+          console.log("do ele");
           results.forEach((e) => {
             data.userName = e.userName;
             data.email = e.email;
             data.listProductLike = JSON.parse(e.listProductLike);
             data.id = e.id;
             data.userId = e.userId;
+            data.avata = e.avata = `${host}/data/${e.avata}`;
           });
           console.log(data.listProductLike);
           console.log("data", data);
           result(data);
-        } else {
-          result({ code: 406 });
         }
       } else {
         result(null);
@@ -101,7 +106,7 @@ User.postUser = (data, result) => {
   });
 };
 
-User.adduser = (data, result) => {
+User.adduser = (host, req, result) => {
   // data = {
   //   userName,
   //   email,
@@ -112,52 +117,86 @@ User.adduser = (data, result) => {
   //   city,
   //   age,
   // };
+  const makeid = (l) => {
+    var result = "";
+    var characters = "0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < l; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
   let newUserId;
   let newData = {};
-  if (!data.listProductLike) data.listProductLike = [];
-  // else data.listProductLike = JSON.stringify(data.listProductLike);
-  db.query("SELECT * FROM user", (err, user) => {
-    if (!err && user.length != 0) {
-      newUserId = parseInt(user[user.length - 1].userId) + 1;
-    } else newUserId = 12345;
-    console.log("data", data);
-    newData = {
-      ...data,
-      userId: newUserId,
-      avata: data.avata
-        ? data.avata
-        : "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      create_at: nowDate(),
-      update_at: nowDate(),
-      dress: data.dress ? data.dress : "số 2 đinhh tiên hoàn",
-      ward: data.ward ? data.ward : "phường 7",
-      distrist: data.district ? data.district : "quận 4",
-      city: data.city ? data.city : "TP HCM",
-    };
-    console.log("newdata", newData);
-    const e = user.filter((u) => u.email === data.email);
-    if (e.length > 0) result({ code: 406 });
-    else {
-      newData.listProductLike = JSON.stringify(newData.listProductLike);
-      console.log(typeof newData.listProductLike);
-      db.query("INSERT INTO user SET ?", newData, (err, x) => {
+  if (req.file) {
+    const x = req.file.originalname;
+    const file = x.slice(0, x.lastIndexOf("."));
+    const type = x.slice(x.lastIndexOf("."));
+    let fileName = file + "-" + Date.now() + type;
+    let newFile = __basedir + fileName;
+    fs.readFile(req.file.path, function (err, data) {
+      fs.writeFile(newFile, data, function (err) {
         if (err) {
-          console.log("err", err);
           result({
             code: err.errno,
             message: err.message,
           });
         } else {
-          newData.listProductLike = JSON.parse(newData.listProductLike);
-          newData.id = x.insertId;
-          console.log("data", newData);
-          result(newData);
+          fs.unlink(req.file.path, function (err) {
+            if (!err) {
+              const data = req.body;
+              if (!data.listProductLike) data.listProductLike = [];
+              else data.listProductLike = JSON.stringify(data.listProductLike);
+              db.query("SELECT * FROM user", (err, user) => {
+                if (err || user.length != 0)
+                  do {
+                    newUserId = makeid(5);
+                  } while (user.forEach((e) => e.userId === newUserId));
+                else newUserId = 12345;
+                newData = {
+                  ...data,
+                  userId: newUserId,
+                  avata: fileName
+                    ? fileName
+                    : "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
+                  create_at: nowDate(),
+                  update_at: nowDate(),
+                  dress: data.dress ? data.dress : "số 2 đinhh tiên hoàn",
+                  ward: data.ward ? data.ward : "phường 7",
+                  distrist: data.district ? data.district : "quận 4",
+                  city: data.city ? data.city : "TP HCM",
+                };
+                const e = user.filter((u) => u.email === data.email);
+                if (e.length > 0) result({ code: 406 });
+                else {
+                  newData.listProductLike = JSON.stringify(
+                    newData.listProductLike
+                  );
+                  db.query("INSERT INTO user SET ?", newData, (err, x) => {
+                    if (err) {
+                      result({
+                        code: err.errno,
+                        message: err.message,
+                      });
+                    } else {
+                      newData.listProductLike = JSON.parse(
+                        newData.listProductLike
+                      );
+                      newData.id = x.insertId;
+                      newData.avata = `${req.headers.host}/data/${newData.avata}`;
+                      result(newData);
+                    }
+                  });
+                }
+              });
+            } else result({ code: 400 });
+          });
         }
       });
-    }
-  });
+    });
+  } else result({ code: 400 });
 };
-User.getById = (id, result) => {
+User.getById = (host, id, result) => {
   db.query("SELECT * FROM user WHERE id=?", id, (err, user) => {
     if (err) {
       result({
@@ -167,6 +206,7 @@ User.getById = (id, result) => {
     } else if (user.length === 0) result(null);
     else {
       user[0].listProductLike = parse(user[0]);
+      user[0].avata = `${host}/data/${user[0].avata}`;
       result(user);
     }
   });
@@ -181,7 +221,7 @@ User.remove = (id, result) => {
     } else result("xóa thành công phần tử tại id là" + " " + id);
   });
 };
-User.update = (array, id, result) => {
+User.update = (host, array, id, result) => {
   db.query("SELECT * FROM user WHERE id=?", id, (err, user) => {
     console.log("user trong db", user);
     let newData = {};
@@ -195,7 +235,7 @@ User.update = (array, id, result) => {
         listProductLike: array.listProductLike
           ? JSON.stringify(array.listProductLike)
           : user.listProductLike,
-        avata: array.avata ? array.avata : user.avata,
+        avata: array.avata ? array.avata : `${host}/data/${user.avata}`,
         dress: array.dress ? array.dress : user.dress,
         ward: array.ward ? array.ward : user.ward,
         distrist: array.distrist ? array.distrist : user.distrist,
@@ -235,6 +275,7 @@ User.update = (array, id, result) => {
           else {
             console.log("newData", newData);
             newData.listProductLike = JSON.parse(newData.listProductLike);
+            // newData.avata =
             result(newData);
           }
         }

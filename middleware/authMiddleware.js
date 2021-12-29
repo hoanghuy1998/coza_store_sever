@@ -17,12 +17,15 @@ let isAuth = async (req, res, next) => {
   // Lấy token được gửi lên từ phía client, thông thường tốt nhất là các bạn nên truyền token vào header
   const tokenFromClient =
     req.body.token || req.query.token || req.headers["authorization"];
-  const x = tokenFromClient.slice(7);
+  // const x = tokenFromClient.slice(7);
   if (tokenFromClient) {
     // Nếu tồn tại token
     try {
       // Thực hiện giải mã token xem có hợp lệ hay không?
-      const decoded = await jwtHelper.verifyToken(x, accessTokenSecret);
+      const decoded = await jwtHelper.verifyToken(
+        tokenFromClient,
+        accessTokenSecret
+      );
       // console.log(decoded);
       // Nếu token hợp lệ, lưu thông tin giải mã được vào đối tượng req, dùng cho các xử lý ở phía sau.
       req.jwtDecoded = decoded;
@@ -30,7 +33,6 @@ let isAuth = async (req, res, next) => {
       // Cho phép req đi tiếp sang controller.
       next();
     } catch (error) {
-      console.log(error);
       // Nếu giải mã gặp lỗi: Không đúng, hết hạn...etc:
       // Lưu ý trong dự án thực tế hãy bỏ dòng debug bên dưới, mình để đây để debug lỗi cho các bạn xem thôi
       debug("Error while verify token:", error);

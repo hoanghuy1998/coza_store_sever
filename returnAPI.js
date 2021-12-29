@@ -1,12 +1,10 @@
 exports.payload = (res, payload) => {
   if (!payload) {
-    console.log("do khoong");
     res.status("404").json({
       errorCode: 404,
       errorMessage: "not Found",
     });
   } else if (payload.code) {
-    console.log("do code");
     switch (parseInt(payload.code)) {
       case 303:
         res.status("303").json({
@@ -46,7 +44,6 @@ exports.payload = (res, payload) => {
         break;
     }
   } else {
-    console.log("do data");
     res.status("200").json({
       errorCode: 0,
       data: payload,
@@ -100,9 +97,5 @@ exports.getDate = () => {
 // "city": "ddafd",
 // "ward":"fas",
 // "city": "dfsaf,
-// details: [
-// {id: 12, quantity: 2, price: 100000},
-// {id: 13, quantity: 1, price: 50000},
-// {id: 14, quantity: 4, price: 10000},
-// ]
+// details: [1,2,4]
 // }
