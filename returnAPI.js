@@ -1,8 +1,8 @@
 exports.payload = (res, payload) => {
   if (!payload) {
-    res.status("404").json({
+    res.status("200").json({
       errorCode: 404,
-      errorMessage: "not Found",
+      data: [],
     });
   } else if (payload.code) {
     switch (parseInt(payload.code)) {
@@ -52,8 +52,8 @@ exports.payload = (res, payload) => {
 };
 exports.convertSrc = (a) => {
   a.forEach((a) => {
-    a.srcImg = `http://localhost:5000/data/${a.srcImg}`;
-    // a.srcImg = `https://hoanghuy1998.herokuapp.com/data/${a.srcImg}`;
+    // a.srcImg = `http://localhost:5000/data/${a.srcImg}`;
+    a.srcImg = `https://hoanghuy1998.herokuapp.com/data/${a.srcImg}`;
   });
 };
 exports.parse = (a) => {

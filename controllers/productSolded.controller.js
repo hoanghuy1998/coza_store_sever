@@ -20,8 +20,8 @@ exports.addMyProduct = (req, res) => {
   ProductSolded.create(req.body, (reqnse) => payload(res, reqnse));
 };
 // exports.updateMyCartProduct = (req, res) => {
-//   ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse));
+//   ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse)  );
 // };
 // exports.removeMyCartProduct = (req, res) => {
-//   ProductSolded.remove(req.params.id, (resp) =>  payload(res, reqnse));
+//   ProductSolded.remove(req.params.id, (resp) =>  payload(res, reqnse)  );
 // };

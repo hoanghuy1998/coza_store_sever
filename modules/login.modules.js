@@ -41,7 +41,7 @@ const User = (User) => {
     (this.listProductLike = User.listProductLike),
     (this.dress = User.dress),
     (this.ward = User.ward),
-    (this.distrist = User.distrist),
+    (this.district = User.district),
     (this.city = User.city);
 };
 User.getAll = (result) => {
@@ -82,7 +82,7 @@ User.postUser = (host, data, result) => {
     } else {
       const x = user.filter((u) => u.email === data.email);
       if (x && x.length > 0) {
-        const results = x.filter((x) => x.password === data.password);
+        const results = x.filter((x) => x.password === parseInt(data.password));
         console.log("results", results);
         if (results.length === 0) result({ code: 406 });
         else {
@@ -152,7 +152,7 @@ User.adduser = (host, req, result) => {
                   do {
                     newUserId = makeid(5);
                   } while (user.forEach((e) => e.userId === newUserId));
-                else newUserId = 12345;
+                else newUserId = makeid(5);
                 newData = {
                   ...data,
                   userId: newUserId,
@@ -163,7 +163,7 @@ User.adduser = (host, req, result) => {
                   update_at: nowDate(),
                   dress: data.dress ? data.dress : "số 2 đinhh tiên hoàn",
                   ward: data.ward ? data.ward : "phường 7",
-                  distrist: data.district ? data.district : "quận 4",
+                  district: data.district ? data.district : "quận 4",
                   city: data.city ? data.city : "TP HCM",
                 };
                 const e = user.filter((u) => u.email === data.email);
@@ -238,14 +238,14 @@ User.update = (host, array, id, result) => {
         avata: array.avata ? array.avata : `${host}/data/${user.avata}`,
         dress: array.dress ? array.dress : user.dress,
         ward: array.ward ? array.ward : user.ward,
-        distrist: array.distrist ? array.distrist : user.distrist,
+        district: array.district ? array.district : user.district,
         city: array.city ? array.city : user.city,
       };
     });
     if (newData) {
       // newData.listProductLike = JSON.stringify(newData.listProductLike);
       db.query(
-        `UPDATE user SET userName=?,userId=?,avata=?,gender=?,email=?,dress=?,create_at=?,update_at=?,age=?,password=?,listProductLike=?,ward=?,distrist=?,city=?,phone=?  WHERE id=?`,
+        `UPDATE user SET userName=?,userId=?,avata=?,gender=?,email=?,dress=?,create_at=?,update_at=?,age=?,password=?,listProductLike=?,ward=?,district=?,city=?,phone=?  WHERE id=?`,
         [
           newData.userName,
           newData.userId,
@@ -259,7 +259,7 @@ User.update = (host, array, id, result) => {
           newData.password,
           newData.listProductLike,
           newData.ward,
-          newData.distrist,
+          newData.district,
           newData.city,
           newData.phone,
           id,

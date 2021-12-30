@@ -10,7 +10,7 @@ module.exports = (login) => {
   login.post("/login", loginUser.login);
   login.get("/refresh-token", loginUser.refreshToken);
   login.post("/user", upload.single("avata"), loginUser.addUser);
-  login.use(authMiddleware.isAuth);
+  // login.use(authMiddleware.isAuth);
   login.get("/user/:id", loginUser.getUser_detail);
   login.get("/user", loginUser.getAll);
   login.post("/user/query", loginUser.addUser);

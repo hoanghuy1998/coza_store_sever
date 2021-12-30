@@ -92,7 +92,7 @@ ProductSolded.getQuery = (query, result) => {
 };
 ProductSolded.create = async (data, result) => {
   // data.details=[id1,id2,id3]
-  console.log("do 1");
+  console.log("data", data);
   let newCode;
   const makeid = (l) => {
     var result = "";
@@ -104,18 +104,22 @@ ProductSolded.create = async (data, result) => {
     }
     return result;
   };
-  db.query("SELECT * FROM productsolded", (err, ProductSolded) => {
+  db.query("SELECT * FROM productsolded", async (err, ProductSolded) => {
     if (err) {
+      // await Promise.reject((x = false));
       result({
         code: err.errno,
         message: err.message,
       });
-    } else if (ProductSolded.length === 0) result(null);
-    else {
+    } else {
       const code = ProductSolded.filter((p) => p.codeOrder);
-      do {
-        newCode = makeid(10);
-      } while (code.forEach((e) => e.code === newCode));
+      if (!code) newCode = makeid(10);
+      else {
+        do {
+          newCode = makeid(10);
+        } while (code.forEach((e) => e.code === newCode));
+      }
+
       let newData = {
         ...data,
         codeOrder: newCode,
@@ -124,93 +128,225 @@ ProductSolded.create = async (data, result) => {
         details: data.details,
         status: 0,
       };
-      let newDataForDetail = [];
-      const id = newData.details;
-      for (let i = 0; i < id.length; i++) {
-        db.query("SELECT * FROM mycart WHERE id=?", id[i], (err, MyCart) => {
+      console.log("newData", newData);
+
+      let mycart = [];
+      isstringify(newData);
+      db.query(
+        "INSERT INTO productsolded   SET ?",
+        newData,
+        (err, productsolded) => {
           if (err) {
-            if (i === id.length - 1) {
-              result({
-                code: err.errno,
-                message: err.message,
-              });
-            } else return;
-          } else if (MyCart.length === 0) {
-            if (i === id.length - 1) result(null);
-            else return;
+            result({
+              code: err.errno,
+              message: err.message,
+            });
           } else {
-            isstringify(newData);
-            db.query(
-              "INSERT INTO productsolded SET ?",
-              newData,
-              (err, productsolded) => {
-                if (err) {
-                  if (i === id.length - 1) {
-                    result({
-                      code: err.errno,
-                      message: err.message,
-                    });
-                  } else return;
-                } else {
-                  isparse(newData);
-                  newData.id = productsolded.inserId;
-                  newDataForDetail = {
-                    productId: MyCart[0].productId,
-                    srcImg: MyCart[0].srcImg,
-                    name: MyCart[0].name,
-                    codeOrder: newData.codeOrder,
-                    create_at: nowDate(),
-                    update_at: nowDate(),
-                    total: MyCart[0].total,
-                    price: MyCart[0].price,
-                    quantity: MyCart[0].quantity,
-                  };
-                  db.query(
-                    "INSERT INTO productsolded_detail SET ?",
-                    newDataForDetail,
-                    (err, product) => {
-                      if (err) {
-                        if (i === id.length - 1) {
-                          result({
-                            code: err.errno,
-                            message: err.message,
-                          });
-                        } else return;
-                      } else {
-                        //delete product id mycart
-                        db.query(
-                          "DELETE  FROM mycart WHERE id=?",
-                          id,
-                          (err, MyCart) => {
-                            if (err) {
-                              if (i === id.length - 1) {
-                                result({
-                                  code: err.errno,
-                                  message: err.message,
-                                });
-                              } else return;
-                            } else {
-                              if (i === id.length - 1) {
-                                result(newData);
+            isparse(newData);
+            const id = data.details;
+            console.log(id);
+            for (let i = 0; i < id.length; i++) {
+              db.query(
+                "SELECT * FROM mycart WHERE id=?",
+                id[i],
+                (err, MyCart) => {
+                  if (err) {
+                    if (i === id.length - 1) {
+                      result({
+                        code: err.errno,
+                        message: err.message,
+                      });
+                    } else return;
+                  } else if (MyCart.length === 0) {
+                    if (i === id.length - 1) result(null);
+                    else return;
+                  } else {
+                    newData.id = productsolded.inserId;
+                    const newDataForDetail = {
+                      productId: MyCart[0].productId,
+                      srcImg: MyCart[0].srcImg,
+                      name: MyCart[0].name,
+                      codeOrder: newCode,
+                      create_at: nowDate(),
+                      update_at: nowDate(),
+                      total: MyCart[0].total,
+                      price: MyCart[0].price,
+                      quantity: MyCart[0].quantity,
+                    };
+                    db.query(
+                      "INSERT INTO productsolded_detail SET ?",
+                      newDataForDetail,
+                      (err, product) => {
+                        if (err) {
+                          if (i === id.length - 1) {
+                            result({
+                              code: err.errno,
+                              message: err.message,
+                            });
+                          } else return;
+                        } else {
+                          //delete product id mycart
+                          db.query(
+                            "DELETE  FROM mycart WHERE id=?",
+                            id[i],
+                            (err, MyCart) => {
+                              if (err) {
+                                if (i === id.length - 1) {
+                                  result({
+                                    code: err.errno,
+                                    message: err.message,
+                                  });
+                                } else return;
+                              } else {
+                                if (i === id.length - 1) {
+                                  console.log("newdata kp", newData);
+                                  result(newData);
+                                }
+                                console.log(
+                                  `đã xóa id là ${id} trong mycart vui lòng kiểm tra`
+                                );
                               }
-                              console.log(
-                                `đã xóa id là ${id} trong mycart vui lòng kiểm tra`
-                              );
                             }
-                          }
-                        );
+                          );
+                        }
                       }
-                    }
-                  );
+                    );
+                  }
                 }
-              }
-            );
+              );
+            }
+            // newData.id = productsolded.inserId;
+            // newDataForDetail = {
+            //   productId: MyCart[0].productId,
+            //   srcImg: MyCart[0].srcImg,
+            //   name: MyCart[0].name,
+            //   codeOrder: newCode,
+            //   create_at: nowDate(),
+            //   update_at: nowDate(),
+            //   total: MyCart[0].total,
+            //   price: MyCart[0].price,
+            //   quantity: MyCart[0].quantity,
+            // };
           }
-        });
-      }
+        }
+      );
+      // const p = async () => {
+      //   let x = true;
+      //   let datamycart = [];
+      //   try {
+      //     for (let i = 0; i < id.length; i++) {
+      //       db.query(
+      //         "SELECT * FROM mycart WHERE id=?",
+      //         id[i],
+      //         (err, MyCart) => {
+      //           if (err) {
+      //             if (i === id.length - 1) {
+      //               Promise.reject((x = false));
+      //               // result({
+      //               //   code: err.errno,
+      //               //   message: err.message,
+      //               // });
+      //             } else return;
+      //           } else if (MyCart.length === 0) {
+      //             if (i === id.length - 1) Promise.reject((x = false));
+      //             else return;
+      //           } else {
+      //             isstringify(newData);
+      //             Promise.resolve(datamycart.push(mycart[0]));
+      //           }
+      //         }
+      //       );
+      //     }
+      //     console.log("datamycart", datamycart);
+      //   } catch {
+      //     console.log("co loi");
+      //   }
+      //   console.log("datamycart", datamycart);
+      // };
+      // p();
+      // result(null);
     }
   });
 };
+//MyCart
+// db.query("SELECT * FROM mycart WHERE id=?", id[i], (err, MyCart) => {
+//   if (err) {
+//     if (i === id.length - 1) {
+//       result({
+//         code: err.errno,
+//         message: err.message,
+//       });
+//     } else return;
+//   } else if (MyCart.length === 0) {
+//     if (i === id.length - 1) result(null);
+//     else return;
+//   } else {
+//     isstringify(newData);
+//     console.log("Mycart ", MyCart);
+//   }
+// });
+
+//
+// ProductSolded
+// db.query("INSERT INTO productsolded   SET ?", newData, (err, productsolded) => {
+//   if (err) {
+//     if (i === id.length - 1) {
+//       result({
+//         code: err.errno,
+//         message: err.message,
+//       });
+//     } else return;
+//   } else {
+//     isparse(newData);
+//     newData.id = productsolded.inserId;
+//     newDataForDetail = {
+//       productId: MyCart[0].productId,
+//       srcImg: MyCart[0].srcImg,
+//       name: MyCart[0].name,
+//       codeOrder: newCode,
+//       create_at: nowDate(),
+//       update_at: nowDate(),
+//       total: MyCart[0].total,
+//       price: MyCart[0].price,
+//       quantity: MyCart[0].quantity,
+//     };
+//   }
+// });
+//
+//
+// add product_details
+// db.query(
+//   "INSERT INTO productsolded_detail SET ?",
+//   newDataForDetail,
+//   (err, product) => {
+//     if (err) {
+//       if (i === id.length - 1) {
+//         result({
+//           code: err.errno,
+//           message: err.message,
+//         });
+//       } else return;
+//     } else {
+//       //delete product id mycart
+//       db.query("DELETE  FROM mycart WHERE id=?", id[i], (err, MyCart) => {
+//         if (err) {
+//           if (i === id.length - 1) {
+//             result({
+//               code: err.errno,
+//               message: err.message,
+//             });
+//           } else return;
+//         } else {
+//           if (i === id.length - 1) {
+//             result(newData);
+//           }
+//           console.log(`đã xóa id là ${id} trong mycart vui lòng kiểm tra`);
+//         }
+//       });
+//     }
+//   }
+// );
+//
 // ProductSolded.remove = (id, result) => {
 //   console.log("do delete");
 //   db.query(

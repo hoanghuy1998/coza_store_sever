@@ -149,7 +149,7 @@ exports.refreshToken = async (req, res) => {
   }
 };
 exports.addUser = (req, res) => {
-  User.adduser(req, (reqnse) => payload(res, reqnse));
+  User.adduser(req.headers.host, req, (reqnse) => payload(res, reqnse));
 };
 exports.getUser_detail = (req, res) => {
   User.getById(req.headers.host, req.params.id, (reqnse) =>

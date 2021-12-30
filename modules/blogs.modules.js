@@ -76,7 +76,7 @@ Blog.getById = (id, result) => {
         errorMessage: err.message,
       });
     } else if (blog.length === 0) result(null);
-    else result(blog);
+    else result(blog[0]);
   });
 };
 Blog.paging = (query, result) => {

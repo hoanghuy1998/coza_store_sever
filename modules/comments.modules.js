@@ -51,18 +51,40 @@ Comments.getByParam = (query, result) => {
     }
   });
 };
-Comments.create = (data, result) => {
-  db.query("INSERT INTO commens SET ?", data, (err, Comments) => {
-    if (err) {
+Comments.create = (host, data, result) => {
+  // data = id,content,commentid
+  let newData = {};
+  console.log(data);
+  db.query("SELECT * FROM user WHERE id=?", data.id, (err, user) => {
+    if (err || user.length === 0) {
       result({
         code: err.errno,
         message: err.message,
       });
     } else {
-      data.id = Comments.inserId;
-      data.update_at = nowDate();
-      data.create_at = nowDate();
-      result(data);
+      console.log("do else");
+      newData = {
+        commentId: data.commentId,
+        userName: user[0].userName,
+        contents: data.contents,
+        avataUser: user[0].avata,
+        userId: user[0].userId,
+        create_at: nowDate(),
+        update_at: nowDate(),
+      };
+      console.log("newData", newData);
+      db.query("INSERT INTO commens SET ?", newData, (err, Comments) => {
+        if (err) {
+          result({
+            code: err.errno,
+            message: err.message,
+          });
+        } else {
+          newData.id = Comments.inserId;
+          newData.avataUser = `${host}/data/${newData.avataUser}`;
+          result(newData);
+        }
+      });
     }
   });
 };
@@ -98,6 +120,7 @@ Comments.update = (array, id, result) => {
         });
       } else {
         array.id = id;
+
         result(array);
       }
     }

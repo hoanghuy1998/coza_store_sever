@@ -45,7 +45,6 @@ MyCart.getQuery = (query, result) => {
         const results = MyCart.filter(
           (p) => p.userId === parseInt(query.search)
         );
-        console.log("result", results);
         result(results);
       } else result(MyCart);
     }
