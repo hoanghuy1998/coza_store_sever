@@ -58,7 +58,7 @@ exports.login = (req, res) => {
   console.log(req.headers);
   User.postUser(req.headers.host, req.body, async (payload) => {
     if (!payload) {
-      res.status("404").json({
+      res.status("200").json({
         errorCode: 404,
         errorMessage: "Not Found",
       });
@@ -89,13 +89,13 @@ exports.login = (req, res) => {
           });
           break;
         case 406:
-          res.status("406").json({
+          res.status("200").json({
             errorCode: 406,
             errorMessage: "Not Acceptable",
           });
           break;
         default:
-          res.status("400").json({
+          res.status("200").json({
             errorCode: payload.code,
             errorMessage: payload.message,
           });
