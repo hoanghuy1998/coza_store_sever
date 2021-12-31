@@ -21,7 +21,8 @@ Comments.get_all = (result) => {
     } else if (Comments.length === 0) result(null);
     else {
       Comments.forEach((c) => {
-        c[0].avataUser = `https://hoanghuy1998.herokuapp.com/data/${c.avataUser}`;
+        c[0].avataUser = `http://localhost:5000/data/${c.avataUser}`;
+        // c[0].avataUser = `https://hoanghuy1998.herokuapp.com/data/${c.avataUser}`;
       });
       result(Comments);
     }
@@ -31,8 +32,10 @@ Comments.getById = (id, result) => {
   db.query("SELECT * FROM commens WHERE id=?", id, (err, Comments) => {
     if (err || Comments.length === 0) result(err);
     else {
-      Comments[0].avataUser = `https://hoanghuy1998.herokuapp.com/data/${Comments[0].avataUser}`;
-      result(Comments);
+      Comments[0].avataUser = `http://localhost:5000/data/${Comments[0].avataUser}`;
+      // Comments[0].avataUser = `https://hoanghuy1998.herokuapp.com/data/${Comments[0].avataUser}`;
+      //localhost:5000
+      http: result(Comments);
     }
   });
 };
@@ -54,8 +57,8 @@ Comments.getByParam = (query, result) => {
         if (!results || results.length === 0) result(null);
         else {
           results.map((r) => {
-            // r.avataUser = `http://localhost:5000/data/${r.avataUser}`;
-            r.avataUser = `https://hoanghuy1998.herokuapp.com/data/${r.avataUser}`;
+            r.avataUser = `http://localhost:5000/data/${r.avataUser}`;
+            // r.avataUser = `https://hoanghuy1998.herokuapp.com/data/${r.avataUser}`;
           });
 
           result(results);
