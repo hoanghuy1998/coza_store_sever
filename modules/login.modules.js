@@ -93,7 +93,9 @@ User.postUser = (host, data, result) => {
             data.listProductLike = JSON.parse(e.listProductLike);
             data.id = e.id;
             data.userId = e.userId;
-            data.avata = e.avata = `http://${host}/data/${e.avata}`;
+            data.avata =
+              e.avata = `https://hoanghuy1998.herokuapp.com/data/${e.avata}`;
+            // data.avata = e.avata = `http://${host}/data/${e.avata}`;
           });
           console.log(data.listProductLike);
           console.log("data", data);
@@ -183,8 +185,10 @@ User.adduser = (host, req, result) => {
                         newData.listProductLike
                       );
                       newData.id = x.insertId;
-                      newData.avata = `https://${host}/data/${newData.avata}`;
-                      result(newData);
+                      newData.avata = `https://hoanghuy1998.herokuapp.com/data/${newData.avata}`;
+                      // newData.avata = `https://${host}/data/${newData.avata}`;
+                      //hoanghuy1998.herokuapp.com/data/
+                      https: result(newData);
                     }
                   });
                 }
@@ -206,7 +210,8 @@ User.getById = (host, id, result) => {
     } else if (user.length === 0) result(null);
     else {
       user[0].listProductLike = parse(user[0]);
-      user[0].avata = `https://${host}/data/${user[0].avata}`;
+      user[0].avata = `https://hoanghuy1998.herokuapp.com/data/${user[0].avata}`;
+      // user[0].avata = `https://${host}/data/${user[0].avata}`;
       result(user);
     }
   });
