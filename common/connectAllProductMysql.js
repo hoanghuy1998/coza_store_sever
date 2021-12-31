@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 const connectionAllProduct = mysql.createConnection({
   // database: local,
-  //  host: "localhost",
-  //  user: "root",
-  //  password: "",
-  //  database: "dbcozastore",
+  // host: "localhost",
+  // user: "root",
+  // password: "",
+  // database: "dbcozastore",
   // database: server
   host: "sql6.freesqldatabase.com",
   user: "sql6462165",

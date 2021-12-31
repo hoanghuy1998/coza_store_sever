@@ -147,6 +147,7 @@ User.adduser = (host, req, result) => {
           fs.unlink(req.file.path, function (err) {
             if (!err) {
               const data = req.body;
+              console.log("data", data);
               if (!data.listProductLike) data.listProductLike = [];
               else data.listProductLike = JSON.stringify(data.listProductLike);
               db.query("SELECT * FROM user", (err, user) => {

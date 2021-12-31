@@ -59,6 +59,7 @@ exports.login = (req, res) => {
   User.postUser(req.headers.host, req.body, async (payload) => {
     if (!payload) {
       res.status("404").json({
+        errorCode: 404,
         errorMessage: "Not Found",
       });
     } else if (payload.code) {
@@ -145,7 +146,8 @@ exports.refreshToken = async (req, res) => {
     });
   } else {
     res.status(403).json({
-      message: "Invalid refresh token.",
+      errorCode: 403,
+      errorMessage: "Invalid refresh token.",
     });
   }
 };
