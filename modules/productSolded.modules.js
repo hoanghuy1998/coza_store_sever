@@ -347,17 +347,23 @@ ProductSolded.create = async (data, result) => {
 //   }
 // );
 //
-// ProductSolded.remove = (id, result) => {
-//   console.log("do delete");
-//   db.query(
-//     "DELETE  FROM productsolded WHERE id=?",
-//     id,
-//     (err, ProductSolded) => {
-//       if (err) result(null);
-//       else result("xóa thành công phần tử tại id là" + id);
-//     }
-//   );
-// };
+ProductSolded.remove = (id, result) => {
+  console.log("do delete");
+  setTimeout(() => {
+    db.query(
+      "DELETE  FROM productsolded WHERE id=?",
+      id,
+      (err, ProductSolded) => {
+        if (err)
+          result({
+            code: err.errno,
+            errorMessage: err.message,
+          });
+        else result("xóa thành công phần tử tại id là" + id);
+      }
+    );
+  }, 300);
+};
 // ProductSolded.update = (array, id, result) => {
 //   db.query(
 //     `UPDATE productsolded SET userName=?,userId=?,codeOrder=?, productName=?,price=?,dress=?,create_at=?,update_at=?,quantity=?,total=?,status=?,phone=?,ward=?,district=?,city=?,srcImg=?  WHERE id=?`,

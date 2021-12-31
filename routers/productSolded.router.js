@@ -5,5 +5,5 @@ module.exports = (router) => {
   router.get("/productSoldedQuery", ProductSolded.getMyProduct_query);
   router.post("/productSolded", ProductSolded.addMyProduct);
   //   router.put("/productSolded/:id", ProductSolded.updateMyCartProduct);
-  //   router.delete("/productSolded/:id", ProductSolded.removeMyCartProduct);
+  router.delete("/productSolded/:id", ProductSolded.removeMyCartProduct);
 };

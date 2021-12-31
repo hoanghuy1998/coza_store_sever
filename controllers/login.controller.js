@@ -55,6 +55,7 @@ exports.getAll = (req, res) => {
   User.getAll((reqnse) => payload(res, reqnse));
 };
 exports.login = (req, res) => {
+  console.log(req.headers);
   User.postUser(req.headers.host, req.body, async (payload) => {
     if (!payload) {
       res.status("404").json({

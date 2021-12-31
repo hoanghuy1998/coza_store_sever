@@ -8,6 +8,7 @@ exports.getcommnet_detail = (req, res) => {
   Allcomment.getById(req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.getcommentfilter = (req, res) => {
+  console.log(req.headers);
   Allcomment.getByParam(req.query, (reqnse) => payload(res, reqnse));
 };
 // exports.getProductPagingAndSearch = (req, res) => {

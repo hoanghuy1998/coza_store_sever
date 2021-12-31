@@ -93,7 +93,7 @@ User.postUser = (host, data, result) => {
             data.listProductLike = JSON.parse(e.listProductLike);
             data.id = e.id;
             data.userId = e.userId;
-            data.avata = e.avata = `https://${host}/data/${e.avata}`;
+            data.avata = e.avata = `http://${host}/data/${e.avata}`;
           });
           console.log(data.listProductLike);
           console.log("data", data);

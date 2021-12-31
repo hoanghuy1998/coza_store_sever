@@ -22,6 +22,6 @@ exports.addMyProduct = (req, res) => {
 // exports.updateMyCartProduct = (req, res) => {
 //   ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse)  );
 // };
-// exports.removeMyCartProduct = (req, res) => {
-//   ProductSolded.remove(req.params.id, (resp) =>  payload(res, reqnse)  );
-// };
+exports.removeMyCartProduct = (req, res) => {
+  ProductSolded.remove(req.params.id, (reqnse) => payload(res, reqnse));
+};

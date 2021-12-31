@@ -45,6 +45,11 @@ Comments.getByParam = (query, result) => {
         );
         if (!results || results.length === 0) result(null);
         else {
+          results.map((r) => {
+            r.avataUser = `http://localhost:5000/data/${r.avataUser}`;
+            // r.avataUser = `https://hoanghuy1998.herokuapp.com/data/${r.avataUser}`;
+          });
+
           result(results);
         }
       }
@@ -81,7 +86,8 @@ Comments.create = (host, data, result) => {
           });
         } else {
           newData.id = Comments.inserId;
-          newData.avataUser = `${host}/data/${newData.avataUser}`;
+          newData.avataUser = `http://localhost:5000/data/${newData.avataUser}`;
+          // newData.avataUser = `https://hoanghuy1998.herokuapp.com/data/${newData.avataUser}`;
           result(newData);
         }
       });
