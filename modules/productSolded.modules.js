@@ -24,7 +24,9 @@ const ProductSolded = (ProductSolded) => {
     (this.ward = ProductSolded.ward),
     (this.district = ProductSolded.district),
     (this.city = ProductSolded.city),
-    (this.details = ProductSolded.details);
+    (this.details = ProductSolded.details),
+    (this.coupon = ProductSolded.coupon),
+    (this.transportFee = ProductSolded.transportFee);
 };
 
 ProductSolded.get_all = (result) => {
@@ -364,36 +366,59 @@ ProductSolded.remove = (id, result) => {
     );
   }, 300);
 };
-// ProductSolded.update = (array, id, result) => {
-//   db.query(
-//     `UPDATE productsolded SET userName=?,userId=?,codeOrder=?, productName=?,price=?,dress=?,create_at=?,update_at=?,quantity=?,total=?,status=?,phone=?,ward=?,district=?,city=?,srcImg=?  WHERE id=?`,
-//     [
-//       array.userName,
-//       array.userId,
-//       array.codeOrder,
-//       array.productName,
-//       array.price,
-//       array.dress,
-//       array.create_at,
-//       array.update_at,
-//       array.quantity,
-//       array.total,
-//       array.status,
-//       array.phone,
-//       array.ward,
-//       array.district,
-//       array.city,
-//       array.srcImg,
-//       id,
-//     ],
-//     (err, ProductSolded) => {
-//       if (err) {
-//         result(null);
-//       } else {
-//         result({ id: id, ...array });
-//       }
-//     }
-//   );
-// };
+ProductSolded.update = (data, id, result) => {
+  console.log("data", data);
+  console.log("id", id);
+  let newData = {};
+  db.query(
+    "SELECT * FROM productsolded WHERE id=?",
+    id,
+    (err, ProductSolded) => {
+      if (err) {
+        result({
+          code: err.errno,
+          message: err.message,
+        });
+      } else if (ProductSolded.length === 0) result(null);
+      else {
+        newData = {
+          ...ProductSolded[0],
+          update_at: nowDate(),
+          status: data.status,
+          update_at: nowDate(),
+        };
+        console.log("newData", typeof newData.details);
+        db.query(
+          `UPDATE productsolded SET userName=?,userId=?,codeOrder=?,dress=?,create_at=?,update_at=?,status=?,phone=?,ward=?,district=?,city=?,details=?  WHERE id=?`,
+          [
+            newData.userName,
+            newData.userId,
+            newData.codeOrder,
+            newData.dress,
+            newData.create_at,
+            newData.update_at,
+            newData.status,
+            newData.phone,
+            newData.ward,
+            newData.district,
+            newData.city,
+            newData.details,
+            id,
+          ],
+          (err, ProductSolded) => {
+            if (err) {
+              result({
+                code: err.errno,
+                message: err.message,
+              });
+            } else {
+              result({ id: id, ...newData });
+            }
+          }
+        );
+      }
+    }
+  );
+};
 
 module.exports = ProductSolded;

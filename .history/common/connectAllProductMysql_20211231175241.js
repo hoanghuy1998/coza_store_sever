@@ -1,15 +1,15 @@
 const mysql = require("mysql");
 const connectionAllProduct = mysql.createConnection({
   // database: local,
-  // host: "localhost",
-  // user: "root",
-  // password: "",
-  // database: "dbcozastore",
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "dbcozastore",
   // database: server
-  host: "sql6.freemysqlhosting.net",
-  user: "sql6466338",
-  password: "PkaDSJCH4m",
-  database: "sql6466338",
+  // host: "sql6.freesqldatabase.com",
+  // user: "sql6462165",
+  // password: "SN2HTS9d73",
+  // database: "sql6462165",
 });
 connectionAllProduct.connect((err) => {
   if (err) {

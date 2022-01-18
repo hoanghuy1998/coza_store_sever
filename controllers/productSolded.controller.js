@@ -19,9 +19,9 @@ exports.getMyProduct_query = (req, res) => {
 exports.addMyProduct = (req, res) => {
   ProductSolded.create(req.body, (reqnse) => payload(res, reqnse));
 };
-// exports.updateMyCartProduct = (req, res) => {
-//   ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse)  );
-// };
+exports.updateMyCartProduct = (req, res) => {
+  ProductSolded.update(req.body, req.params.id, (reqnse) =>  payload(res, reqnse)  );
+};
 exports.removeMyCartProduct = (req, res) => {
   ProductSolded.remove(req.params.id, (reqnse) => payload(res, reqnse));
 };

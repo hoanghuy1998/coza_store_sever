@@ -1,15 +1,16 @@
 const db = require("../common/connectAllProductMysql");
 const x = require("../returnAPI");
 const nowDate = x.getDate;
+const convertSrc = (r) => `http://localhost:5000/data/${r}`;
 const Comments = (Comments) => {
   (this.id = Comments.id),
     (this.commentId = Comments.commentId),
     (this.userId = Comments.userId),
     (this.contents = Comments.contents),
-    (this.avataUser = Comments.avataUser),
     (this.create_at = Comments.create_at),
     (this.update_at = Comments.update_at),
-    (this.userName = Comments.userName);
+    (this.userName = Comments.userName),
+    (this.avataUser = Comments.avataUser);
 };
 Comments.get_all = (result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
@@ -56,9 +57,10 @@ Comments.getByParam = (query, result) => {
         );
         if (!results || results.length === 0) result(null);
         else {
+          console.log("do");
           results.map((r) => {
-            r.avataUser = `http://localhost:5000/data/${r.avataUser}`;
-            // r.avataUser = `https://hoanghuy1998.herokuapp.com/data/${r.avataUser}`;
+            console.log(r.userId);
+            r.avataUser = convertSrc(r.avataUser);
           });
 
           result(results);
@@ -67,8 +69,9 @@ Comments.getByParam = (query, result) => {
     }
   });
 };
-Comments.create = (host, data, result) => {
-  // data = id,content,commentid
+Comments.create = (data, result) => {
+  console.log("data", data);
+  // data = id,content,commentid,iduser
   let newData = {};
   console.log(data);
   db.query("SELECT * FROM user WHERE id=?", data.id, (err, user) => {
@@ -81,14 +84,13 @@ Comments.create = (host, data, result) => {
       console.log("do else");
       newData = {
         commentId: data.commentId,
+        avataUser: user[0].avata,
         userName: user[0].userName,
         contents: data.contents,
-        avataUser: user[0].avata,
         userId: user[0].userId,
         create_at: nowDate(),
         update_at: nowDate(),
       };
-      console.log("newData", newData);
       db.query("INSERT INTO commens SET ?", newData, (err, Comments) => {
         if (err) {
           result({
@@ -97,8 +99,6 @@ Comments.create = (host, data, result) => {
           });
         } else {
           newData.id = Comments.inserId;
-          newData.avataUser = `http://localhost:5000/data/${newData.avataUser}`;
-          // newData.avataUser = `https://hoanghuy1998.herokuapp.com/data/${newData.avataUser}`;
           result(newData);
         }
       });

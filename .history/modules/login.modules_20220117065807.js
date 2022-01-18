@@ -88,7 +88,6 @@ User.getAll = (host, result) => {
   });
 };
 User.checkUser = (host, data, result) => {
-  console.log('do dAY')
   const chekcNewDataAsnyc = new Promise((resolve, reject) => {
     db.query(
       "select * from user where userName='" + data.displayName + "'     ",

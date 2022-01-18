@@ -155,6 +155,7 @@ Allproduct.getByParam = (param, result) => {
           (a) => a.price >= parseInt(param.start)
         );
         if (filter.length > 0) {
+          convertSrc(filter);
           result(filter);
         } else result(null);
       } else if (!param) {

@@ -31,11 +31,12 @@ exports.getProductPagingAndSearch = (req, res) => {
   Allproduct.getPagingSearch(req.query, (reqnse) => payload(res, reqnse));
 };
 exports.add_allproduct = (req, res) => {
-  Allproduct.create(req.body, (reqnse) => payload(res, reqnse));
+  Allproduct.create(req, (reqnse) => payload(res, reqnse));
 };
 exports.update_allproduct = (req, res) => {
+  console.log()
   Allproduct.update(req.body, req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.remove_allproduct = (req, res) => {
-  Allproduct.remove(req.params.id, (resp) => payload(res, reqnse));
+  Allproduct.remove(req.params.id, (reqnse) => payload(res, reqnse));
 };

@@ -11,52 +11,13 @@ const refreshTokenLife = process.env.REFRESH_TOKEN_LIFE || "3650d";
 // Mã secretKey này phải được bảo mật tuyệt đối, các bạn có thể lưu vào biến môi trường hoặc file
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "123456789";
 // Thời gian sống của refreshToken
-exports.upload = (req, res) => {
-  console.log(req.body);
-  if (req.file) {
-    //   const x = req.file.originalname;
-    //   const file = x.slice(0, x.lastIndexOf("."));
-    //   const type = x.slice(x.lastIndexOf("."));
-    //   let fileName = file + Date.now() + type;
-    //   let newFile = __basedir + fileName;
-    //   console.log("newFile", newFile);
-    //   console.log("fileName", fileName);
-    //   fs.readFile(req.file.path, function (err, data) {
-    //     fs.writeFile(newFile, data, function (err) {
-    //       if (err) {
-    //         console.log("err", err);
-    //         res.send("Write file error!");
-    //       } else {
-    //         res.send("success");
-    //         console.log("data", newFile);
-    //         // student.set("Image", fileName);
-    //         // student.save("STU_ID=" + lastestId, function (err, row) {
-    //         //   if (err) {
-    //         //     res.send(Result.error(1, "Update image error!"));
-    //         //   } else {
-    //         //     student.set("STU_ID", lastestId);
-    //         //     var reqUrl = url.format({
-    //         //       protocol: req.protocol,
-    //         //       host: req.get("host"),
-    //         //       // pathname: req.originalUrl,
-    //         //     });
-    //         //     student.set("Image", reqUrl + "/data/student/" + fileName);
-    //         //     res.send(Result.data(student));
-    //         //   }
-    //         // });
-    //       }
-    //     });
-    //   });
-    // }
-    // res.send("hello");
-  }
-};
 exports.getAll = (req, res) => {
-  User.getAll((reqnse) => payload(res, reqnse));
+  const host = req.protocol + "://" + req.get("Host") + "/data/";
+  User.getAll(host, (reqnse) => payload(res, reqnse));
 };
 exports.login = (req, res) => {
-  console.log(req.headers);
-  User.postUser(req.headers.host, req.body, async (payload) => {
+  const host = req.protocol + "://" + req.get("Host") + "/data/";
+  User.postUser(host, req.body, async (payload) => {
     if (!payload) {
       res.status("200").json({
         errorCode: 404,
@@ -121,6 +82,22 @@ exports.login = (req, res) => {
     }
   });
 };
+exports.logOut = (req, res) => {
+  req.logout();
+  res.status("200").json({
+    errorCode: 0,
+    isLogin: false,
+    data: [],
+  });
+};
+exports.authCallback = (req, res) => {
+  console.log(res);
+  console.log(req);
+};
+exports.checkUser = (req, res) => {
+  const host = req.protocol + "://" + req.get("Host") + "/data/";
+  User.checkUser(host, req.user, (reqnse) => payload(res, reqnse));
+};
 exports.refreshToken = async (req, res) => {
   const refreshTokenFromClient = req.headers["authorization"];
   console.log(refreshTokenFromClient);
@@ -155,14 +132,12 @@ exports.addUser = (req, res) => {
   User.adduser(req.headers.host, req, (reqnse) => payload(res, reqnse));
 };
 exports.getUser_detail = (req, res) => {
-  User.getById(req.headers.host, req.params.id, (reqnse) =>
-    payload(res, reqnse)
-  );
+  const host = req.protocol + "://" + req.get("Host") + "/data/";
+  User.getById(host, req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.updateUser = (req, res) => {
-  User.update(req.headers.host, req.body, req.params.id, (reqnse) =>
-    payload(res, reqnse)
-  );
+  const host = req.protocol + "://" + req.get("Host") + "/data/";
+  User.update(host, req.body, req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.deleteUser = (req, res) => {
   User.remove(req.params.id, (reqnse) => payload(res, reqnse));

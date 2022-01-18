@@ -6,16 +6,16 @@ exports.payload = (res, payload) => {
     });
   } else if (payload.code) {
     switch (parseInt(payload.code)) {
+      case 200:
+        res.status("200").json({
+          errorCode: 400,
+          errorMessage: payload.message,
+        });
+        break;
       case 303:
         res.status("303").json({
           errorCode: 303,
           errorMessage: "See Other",
-        });
-        break;
-      case 400:
-        res.status("400").json({
-          errorCode: 400,
-          errorMessage: "Bad Request",
         });
         break;
       case 401:
@@ -67,6 +67,7 @@ exports.parse = (a) => {
 };
 exports.stringify = (a) => {
   a.forEach((a) => {
+    console.log(a.id);
     if (a.type) a.type = JSON.stringify(a.type);
     if (a.status) a.status = JSON.stringify(a.status);
     if (a.contents) a.contents = JSON.stringify(a.contents);
