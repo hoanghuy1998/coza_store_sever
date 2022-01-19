@@ -12,7 +12,7 @@ const Comments = (Comments) => {
     (this.userName = Comments.userName),
     (this.avataUser = Comments.avataUser);
 };
-Comments.get_all = (host,result) => {
+Comments.get_all = (result) => {
   db.query("SELECT * FROM commens", (err, Comments) => {
     if (err) {
       result({
@@ -21,7 +21,10 @@ Comments.get_all = (host,result) => {
       });
     } else if (Comments.length === 0) result(null);
     else {
-      Comments.forEach((c) => c[0].avataUser = `${host}${c.avataUser}`);
+      Comments.forEach((c) => {
+        c[0].avataUser = `http://localhost:5000/data/${c.avataUser}`;
+        // c[0].avataUser = `https://hoanghuy1998.herokuapp.com/data/${c.avataUser}`;
+      });
       result(Comments);
     }
   });

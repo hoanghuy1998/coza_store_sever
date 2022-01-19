@@ -21,7 +21,9 @@ Comments.get_all = (host,result) => {
       });
     } else if (Comments.length === 0) result(null);
     else {
-      Comments.forEach((c) => c[0].avataUser = `${host}${c.avataUser}`);
+      Comments.forEach((c) => 
+        c[0].avataUser = `${host}${c.avataUser}`;
+      );
       result(Comments);
     }
   });
