@@ -9,6 +9,5 @@ exports.getId = (req, res) => {
   details.getById(req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.getQuery = (req, res) => {
-  const host = req.protocol + "://" + req.get("Host") + "/data/";
-  details.getByQuery(host,req.query, (reqnse) => payload(res, reqnse));
+  details.getByQuery(req.query, (reqnse) => payload(res, reqnse));
 };

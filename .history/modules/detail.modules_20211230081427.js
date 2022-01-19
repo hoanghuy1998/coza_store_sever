@@ -47,7 +47,7 @@ Details.getById = (id, result) => {
     }
   );
 };
-Details.getByQuery = (host,query, result) => {
+Details.getByQuery = (query, result) => {
   db.query("SELECT * FROM productsolded_detail", (err, details) => {
     if (err) {
       result({
@@ -59,7 +59,7 @@ Details.getByQuery = (host,query, result) => {
       const filter = details.filter((d) => d.codeOrder === query.search);
       console.log("details", details);
       if (filter.length > 0) {
-        convertSrc(host,filter);
+        convertSrc(filter);
         result(filter);
       } else result(null);
     }
