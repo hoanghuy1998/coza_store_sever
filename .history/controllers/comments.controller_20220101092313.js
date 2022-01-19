@@ -2,16 +2,13 @@ const Allcomment = require("../modules/comments.modules");
 const x = require("../returnAPI");
 const payload = x.payload;
 exports.getcomment = (req, res) => {
-  const host = req.protocol + "://" + req.get("Host") + "/data/";
   Allcomment.get_all((reqnse) => payload(res, reqnse));
 };
 exports.getcommnet_detail = (req, res) => {
   Allcomment.getById(req.params.id, (reqnse) => payload(res, reqnse));
 };
 exports.getcommentfilter = (req, res) => {
-  const host = req.protocol + "://" + req.get("Host") + "/data/";
-  console.log("req.query", req.query)
-  Allcomment.getByParam(host,req.query, (reqnse) => payload(res, reqnse));
+  Allcomment.getByParam(req.query, (reqnse) => payload(res, reqnse));
 };
 // exports.getProductPagingAndSearch = (req, res) => {
 //   Allcomment.getPagingSearch(req.query, (reqnse) => payload(res, reqnse)  );

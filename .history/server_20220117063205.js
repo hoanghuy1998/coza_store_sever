@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 5000;
 const config = require("./config");
 
 //cấu hình cors
