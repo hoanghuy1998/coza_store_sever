@@ -3,49 +3,49 @@ const x = require("../returnAPI");
 const payload = x.payload;
 exports.getAllProduct = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.get_all(host,(datas) => payload(res, datas));
+  Allproduct.get_all((datas) => payload(res, datas,host));
 };
 exports.allproduct_detail = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.getById(host,req.params.id, (reqnse) => payload(res, reqnse));
+  Allproduct.getById(req.params.id, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductQuery = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.getByParam(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.getByParam(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductFilterQuery = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.productFilterQuery(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.productFilterQuery(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductSortQuery = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.productSortQuery(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.productSortQuery(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductFullSearchQuery = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.productFullSearchQuery( host,req.query, (reqnse) =>
-    payload(res, reqnse)
+  Allproduct.productFullSearchQuery(req.query, (reqnse) =>
+    payload(res, reqnse, host)
   );
 };
 exports.getProductFullSearch = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.getFullSearch(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.getFullSearch(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductPaging = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.getPaging(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.getPaging(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.getProductPagingAndSearch = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.getPagingSearch(host,req.query, (reqnse) => payload(res, reqnse));
+  Allproduct.getPagingSearch(req.query, (reqnse) => payload(res, reqnse,host));
 };
 exports.add_allproduct = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.create(host,req, (reqnse) => payload(res, reqnse));
+  Allproduct.create(req, (reqnse) => payload(res, reqnse,host));
 };
 exports.update_allproduct = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.update(host,req.body, req.params.id, (reqnse) => payload(res, reqnse));
+  Allproduct.update(req.body, req.params.id, (reqnse) => payload(res, reqnse,host));
 };
 exports.remove_allproduct = (req, res) => {
   Allproduct.remove(req.params.id, (reqnse) => payload(res, reqnse));

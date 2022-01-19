@@ -6,7 +6,7 @@ const product = (product) => {
     (this.productId = product.productId),
     (this.srcImg = product.srcImg);
 };
-product.productfilter = (host,query, result) => {
+product.productfilter = (query, result) => {
   db.query("SELECT * FROM productdescription", (err, product) => {
     if (err) {
       result({
@@ -17,7 +17,7 @@ product.productfilter = (host,query, result) => {
     else {
       const x = product.filter((p) => p.productId === parseInt(query.search));
       if (x) {
-       x.forEach((x=>x.srcImg=`${host}${x.srcImg}`))
+        convertSrc(x);
         result(x);
       } else result(null);
     }

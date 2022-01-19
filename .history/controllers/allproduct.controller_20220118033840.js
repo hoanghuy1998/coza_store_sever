@@ -3,7 +3,7 @@ const x = require("../returnAPI");
 const payload = x.payload;
 exports.getAllProduct = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.get_all(host,(datas) => payload(res, datas));
+  Allproduct.get_all(host, (reqnse) => payload(res, reqnse));
 };
 exports.allproduct_detail = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
@@ -23,7 +23,7 @@ exports.getProductSortQuery = (req, res) => {
 };
 exports.getProductFullSearchQuery = (req, res) => {
   const host = req.protocol + "://" + req.get("Host") + "/data/";
-  Allproduct.productFullSearchQuery( host,req.query, (reqnse) =>
+  Allproduct.productFullSearchQuery(host,req.query, (reqnse) =>
     payload(res, reqnse)
   );
 };

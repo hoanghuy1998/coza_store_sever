@@ -9,7 +9,7 @@ const __basedirImgDescription = path.join(
   __dirname,
   "../resoure/images/productsDescription/"
 );
-const convertSrc = x.convertSrc
+const convertSrc = x.convertSrc;host,
 const parse = x.parse;
 const stringify = x.stringify;
 const nowDate = x.getDate;

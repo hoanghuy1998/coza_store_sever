@@ -50,9 +50,10 @@ exports.payload = (res, payload) => {
     });
   }
 };
-exports.convertSrc = (host,a) => {
+exports.convertSrc = (a) => {
   a.forEach((a) => {
-    a.srcImg = `${host}${a.srcImg}`;
+    a.srcImg = `http://localhost:5000/data/${a.srcImg}`;
+    // a.srcImg = `https://hoanghuy1998.herokuapp.com/data/${a.srcImg}`;
   });
 };
 exports.parse = (a) => {

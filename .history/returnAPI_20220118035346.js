@@ -51,6 +51,8 @@ exports.payload = (res, payload) => {
   }
 };
 exports.convertSrc = (host,a) => {
+  console.log(a)
+  console.log(host)
   a.forEach((a) => {
     a.srcImg = `${host}${a.srcImg}`;
   });

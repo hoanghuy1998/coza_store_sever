@@ -1,4 +1,4 @@
-exports.payload = (res, payload) => {
+exports.payload = (host,res, payload) => {
   if (!payload) {
     res.status("200").json({
       errorCode: 404,
@@ -50,7 +50,7 @@ exports.payload = (res, payload) => {
     });
   }
 };
-exports.convertSrc = (host,a) => {
+exports.convertSrc = (a) => {
   a.forEach((a) => {
     a.srcImg = `${host}${a.srcImg}`;
   });
