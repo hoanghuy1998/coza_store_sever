@@ -17,31 +17,30 @@ const MyCart = (MyCart) => {
     (this.price = MyCart.price),
     (this.total = MyCart.total);
 };
-MyCart.get_all = (host,result) => {
+MyCart.get_all = (result) => {
   db.query("SELECT * FROM mycart", (err, MyCart) => {
-    convertSrc(host,MyCart);
+    convertSrc(MyCart);
     console.log(MyCart);
     if (err) result({ code: 400 });
     else if (MyCart.length === 0) result(null);
     else result(MyCart);
   });
 };
-MyCart.getById = (host,id, result) => {
+MyCart.getById = (id, result) => {
   db.query("SELECT * FROM mycart WHERE id=?", id, (err, MyCart) => {
-    convertSrc(host,MyCart);
+    convertSrc(MyCart);
     if (err) result({ code: 400 });
     else if (MyCart.length === 0) result(null);
     else result(MyCart);
   });
 };
-MyCart.getQuery = (host,query, result) => {
+MyCart.getQuery = (query, result) => {
   console.log("query", query);
   db.query("SELECT * FROM mycart", (err, MyCart) => {
     if (err) result({ code: 400 });
     else if (MyCart.length === 0) result(null);
     else {
-      console.log("MyCart",MyCart)
-      convertSrc(host,MyCart);
+      convertSrc(MyCart);
       if (query.search) {
         const results = MyCart.filter(
           (p) => p.userId === parseInt(query.search)
