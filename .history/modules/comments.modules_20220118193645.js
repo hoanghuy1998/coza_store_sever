@@ -52,7 +52,9 @@ Comments.getByParam = (host,query, result) => {
         );
         if (!results || results.length === 0) result(null);
         else {
+          console.log("do");
           results.map((r) => {
+            console.log(r.userId);
             r.avataUser = `${host}${r.avataUser}`
           });
 
