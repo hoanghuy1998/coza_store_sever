@@ -7,9 +7,9 @@ const connectionAllProduct = mysql.createConnection({
   // database: "dbcozastore",
   // database: server
   host: "sql6.freemysqlhosting.net",
-  user: "sql6466338",
-  password: "PkaDSJCH4m",
-  database: "sql6466338",
+  user: "sql6468989",
+  password: "znzPdkHlVL",
+  database: "sql6468989",
 });
 connectionAllProduct.connect((err) => {
   if (err) {
