@@ -66,8 +66,8 @@ require("./routers/productSolded.router")(app);
 require("./routers/productDescription.router")(app);
 require("./routers/details.router")(app);
 require("./routers/blogs.router")(app);
-require("./routers/todo.router")(app);
-require("./routers/employee.router")(app);
+// require("./routers/todo.router")(app);
+// require("./routers/employee.router")(app);
 require("./routers/user.router")(app);
 require("./routers/product.router")(app);
 
