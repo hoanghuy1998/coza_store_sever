@@ -8,36 +8,36 @@ exports.payload = (res, payload) => {
     switch (parseInt(payload.code)) {
       case 200:
         res.status("200").json({
-          errorCode: 400,
+          errorCode: 200,
           errorMessage: payload.message,
         });
         break;
       case 303:
-        res.status("303").json({
+        res.status("200").json({
           errorCode: 303,
           errorMessage: "See Other",
         });
         break;
       case 401:
-        res.status("401").json({
+        res.status("200").json({
           errorCode: 401,
           errorMessage: "Unauthorized",
         });
         break;
       case 405:
-        res.status("405").json({
+        res.status("200").json({
           errorCode: 405,
           errorMessage: "Method Not Allowed",
         });
         break;
       case 406:
-        res.status("406").json({
+        res.status("200").json({
           errorCode: 406,
           errorMessage: "Not Acceptable",
         });
         break;
       default:
-        res.status("400").json({
+        res.status("200").json({
           errorCode: payload.code,
           errorMessage: payload.message,
         });
@@ -50,7 +50,7 @@ exports.payload = (res, payload) => {
     });
   }
 };
-exports.convertSrc = (host,a) => {
+exports.convertSrc = (host, a) => {
   a.forEach((a) => {
     a.srcImg = `${host}${a.srcImg}`;
   });
@@ -92,7 +92,7 @@ exports.getDate = () => {
 };
 // {
 // "customerName": "fdsfad",
-// "address": "fdafsd",
+// "adadress": "fdafsd",
 // "phone": "fdfasd",
 // "city": "ddafd",
 // "ward":"fas",

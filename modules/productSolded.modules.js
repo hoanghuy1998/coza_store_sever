@@ -16,7 +16,7 @@ const ProductSolded = (ProductSolded) => {
     (this.userName = ProductSolded.userName),
     (this.userId = ProductSolded.userId),
     (this.codeOrder = ProductSolded.codeOrder),
-    (this.dress = ProductSolded.dress),
+    (this.adress = ProductSolded.adress),
     (this.create_at = ProductSolded.create_at),
     (this.update_at = ProductSolded.update_at),
     (this.status = ProductSolded.status),
@@ -389,12 +389,12 @@ ProductSolded.update = (data, id, result) => {
         };
         console.log("newData", typeof newData.details);
         db.query(
-          `UPDATE productsolded SET userName=?,userId=?,codeOrder=?,dress=?,create_at=?,update_at=?,status=?,phone=?,ward=?,district=?,city=?,details=?  WHERE id=?`,
+          `UPDATE productsolded SET userName=?,userId=?,codeOrder=?,adress=?,create_at=?,update_at=?,status=?,phone=?,ward=?,district=?,city=?,details=?  WHERE id=?`,
           [
             newData.userName,
             newData.userId,
             newData.codeOrder,
-            newData.dress,
+            newData.adress,
             newData.create_at,
             newData.update_at,
             newData.status,

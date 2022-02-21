@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 const path = require("path");
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3030;
 const config = require("./config");
 
 //cấu hình cors
@@ -16,6 +16,9 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "/public")));
+app.use("/data", express.static(__dirname + "/resoure/avatars"));
+app.use("/data", express.static(__dirname + "/resoure/imgs"));
+/*config is our configuration variable.*/
 app.use("/data", express.static(__dirname + "/resoure/images/products"));
 app.use(
   "/data",
@@ -63,6 +66,11 @@ require("./routers/productSolded.router")(app);
 require("./routers/productDescription.router")(app);
 require("./routers/details.router")(app);
 require("./routers/blogs.router")(app);
+require("./routers/todo.router")(app);
+require("./routers/employee.router")(app);
+require("./routers/user.router")(app);
+require("./routers/product.router")(app);
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);

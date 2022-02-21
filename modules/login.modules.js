@@ -47,7 +47,7 @@ const User = (User) => {
     (this.create_at = User.create_at),
     (this.update_at = User.update_at),
     (this.listProductLike = User.listProductLike),
-    (this.dress = User.dress),
+    (this.adress = User.adress),
     (this.ward = User.ward),
     (this.district = User.district),
     (this.city = User.city),
@@ -73,7 +73,7 @@ User.getAll = (host, result) => {
             email: u.email,
             avata: `${host}${u.avata}`,
             phone: u.phone,
-            dress: u.dress,
+            adress: u.adress,
             ward: u.ward,
             district: u.district,
             city: u.city,
@@ -82,13 +82,13 @@ User.getAll = (host, result) => {
           },
         ];
       });
-      convertSrc(host,user);
+      convertSrc(host, user);
       result(newData);
     }
   });
 };
 User.checkUser = (host, data, result) => {
-  console.log('do dAY')
+  console.log("do dAY");
   const chekcNewDataAsnyc = new Promise((resolve, reject) => {
     db.query(
       "select * from user where userName='" + data.displayName + "'     ",
@@ -108,7 +108,7 @@ User.checkUser = (host, data, result) => {
         email: newDataUser.email,
         avata: `${host}Avatar-Facebook.jpg`,
         phone: newDataUser.phone,
-        dress: newDataUser.dress,
+        adress: newDataUser.adress,
         ward: newDataUser.ward,
         district: newDataUser.district,
         city: newDataUser.city,
@@ -128,7 +128,7 @@ User.checkUser = (host, data, result) => {
         age: err.age ? err.age : 18,
         create_at: nowDate(),
         update_at: nowDate(),
-        dress: err.dress ? err.dress : "số 2 đinhh tiên hoàn",
+        adress: err.adress ? err.adress : "số 2 đinhh tiên hoàn",
         ward: err.ward ? err.ward : "phường 7",
         district: err.district ? err.district : "quận 4",
         city: err.city ? err.city : "TP HCM",
@@ -148,7 +148,7 @@ User.checkUser = (host, data, result) => {
             email: newDataUser.email,
             avata: `${host}Avatar-Facebook.jpg`,
             phone: newDataUser.phone,
-            dress: newDataUser.dress,
+            adress: newDataUser.adress,
             ward: newDataUser.ward,
             district: newDataUser.district,
             city: newDataUser.city,
@@ -184,7 +184,7 @@ User.postUser = (host, data, result) => {
               id: x[0].id,
               userId: x[0].userId,
               avata: `${host}${x[0].avata}`,
-              dress: x[0].dress,
+              adress: x[0].adress,
               ward: x[0].ward,
               district: x[0].district,
               city: x[0].city,
@@ -219,7 +219,7 @@ User.adduser = (headers, req, result) => {
   //   userName,
   //   email,
   //   password,
-  //   dress,
+  //   adress,
   //   ward,
   //   district,
   //   city,
@@ -292,7 +292,7 @@ User.adduser = (headers, req, result) => {
             avata: fileName,
             create_at: nowDate(),
             update_at: nowDate(),
-            dress: data.dress ? data.dress : "số 2 đinhh tiên hoàn",
+            adress: data.adress ? data.adress : "số 2 đinhh tiên hoàn",
             ward: data.ward ? data.ward : "phường 7",
             district: data.district ? data.district : "quận 4",
             city: data.city ? data.city : "TP HCM",
@@ -355,7 +355,7 @@ User.getById = (host, id, result) => {
         email: user[0].email,
         avata: `${host}${user[0].avata}`,
         phone: user[0].phone,
-        dress: user[0].dress,
+        adress: user[0].adress,
         ward: user[0].ward,
         district: user[0].district,
         city: user[0].city,
@@ -393,7 +393,7 @@ User.update = (host, array, id, result) => {
           ? JSON.stringify(array.listProductLike)
           : user.listProductLike,
         avata: array.avata ? array.avata : user.avata,
-        dress: array.dress ? array.dress : user.dress,
+        adress: array.adress ? array.adress : user.adress,
         ward: array.ward ? array.ward : user.ward,
         district: array.district ? array.district : user.district,
         city: array.city ? array.city : user.city,
@@ -402,14 +402,14 @@ User.update = (host, array, id, result) => {
     if (newData) {
       // newData.listProductLike = JSON.stringify(newData.listProductLike);
       db.query(
-        `UPDATE user SET userName=?,userId=?,avata=?,gender=?,email=?,dress=?,create_at=?,update_at=?,age=?,password=?,listProductLike=?,ward=?,district=?,city=?,phone=?  WHERE id=?`,
+        `UPDATE user SET userName=?,userId=?,avata=?,gender=?,email=?,adress=?,create_at=?,update_at=?,age=?,password=?,listProductLike=?,ward=?,district=?,city=?,phone=?  WHERE id=?`,
         [
           newData.userName,
           newData.userId,
           newData.avata,
           newData.gender,
           newData.email,
-          newData.dress,
+          newData.adress,
           newData.create_at,
           newData.update_at,
           newData.age,
