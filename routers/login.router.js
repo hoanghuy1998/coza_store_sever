@@ -22,7 +22,7 @@ module.exports = (login) => {
 //       failureRedirect: "/fails",
 //     })
 //   );
-  login.get("/account", ensureAuthenticated, function (req, res) {});
+//   login.get("/account", ensureAuthenticated, function (req, res) {});
 //   login.get("/checkUser", loginUser.checkUser);
   login.get("/logout", loginUser.logOut);
   // login.use(authMiddleware.isAuth);
