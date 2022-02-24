@@ -11,10 +11,10 @@ const connectionAllProduct = mysql.createConnection({
   //   password: "bkhBsqtIEc",
   //   database: "sql6473412",
   // clever server
-  host: "bxpye38re6cdqvtet7ba-mysql.services.clever-cloud.com",
-  user: "ueuybu7trb33ogmr",
-  password: "mEiC3wZmoLZOZqkzqgax",
-  database: "bxpye38re6cdqvtet7ba",
+  host: "remotemysql.com",
+  user: "KkKOxvcTJc",
+  password: "8ldHbHudde",
+  database: "KkKOxvcTJc"
 });
 connectionAllProduct.connect((err) => {
   if (err) {
